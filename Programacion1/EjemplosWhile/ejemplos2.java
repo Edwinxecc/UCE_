@@ -1,4 +1,4 @@
-package code.while_ejemplo;
+package code.whil_ejemplo;
 
 import java.util.Scanner;
 public class ejemplos2 {
