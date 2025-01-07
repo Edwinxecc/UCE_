@@ -9,6 +9,7 @@ public class ejemplos {
         
         System.out.print("Ingresa la palabra: ");
         palabra=entrada.next();
+        entrada.close();
         System.out.println("");
         palabra = palabra.toLowerCase(); // para pasar a minusculas
 
@@ -48,7 +49,5 @@ public class ejemplos {
         System.out.println("i = " + v_i);
         System.out.println("o = " + o);
         System.out.println("u = " + u);
-        
-        entrada.close();
     }
 }
