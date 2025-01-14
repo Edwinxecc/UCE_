@@ -6,7 +6,7 @@ public class ejercicioWhil2 {
         Scanner entrada = new Scanner(System.in);
         int i;
         short num;
-        //Ejercicio 2: Impresion de los numeros pares hasta n.
+        //Ejercicio 2: Impresion de los numeros desde 1 hasta n.
         System.out.print("Ingresa el valor de n: ");
         num = entrada.nextShort();
         System.out.println("");
