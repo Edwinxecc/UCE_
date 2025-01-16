@@ -2,6 +2,11 @@ package EjerciciosBucles;
 import java.util.Scanner;
 public class ejercicioFor2 {
     public static void main(String[] args) {
+        // !! Resolver bug cuando se pueda !!
+
+
+
+        
         //Ejercicio 2: De 5 palabras secretas, pedir adivinar al usuario la palabra tiene 4 intentos 
         // Por cada intento mostras las letras que si contiene la palabra
         // las palabras solo tienen 5 letras
