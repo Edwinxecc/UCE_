@@ -9,12 +9,22 @@ public class matrices {
         System.out.println("Tamaño de la matriz: ");
         int nm = entrada.nextInt(); 
         int matriz[][] = new int[nm][nm];
-        System.out.println("ve verga");
-        entrada.close();
+        
+        //guardar datos en la matriz 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
-                System.out.println("Ingresa el dato en: " + i +", "+j);
+                System.out.println("Ingresa el dato en la posicion: " + i +", "+j);
+                matriz[i][j] = entrada.nextInt();
             }
         }
+
+        //impresion de la matriz 
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + "|");
+            }
+            System.out.println("");
+        }
+        entrada.close();
     }
 }
