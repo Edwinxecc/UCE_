@@ -1,5 +1,6 @@
 package matrices;
 import java.util.Scanner;
+import java.util.Random;
 public class matrices {
 
     public static void main(String[] args) {
@@ -9,6 +10,9 @@ public class matrices {
         System.out.println("Tamaño de la matriz: ");
         int nm = entrada.nextInt(); 
         int matriz[][] = new int[nm][nm];
+        //declaracion de numero aleatorio
+        Random numRandom = new Random();
+        int numAleatorio = 1+numRandom.nextInt(5);
         
         //guardar datos en la matriz 
         for (int i = 0; i < matriz.length; i++) {
