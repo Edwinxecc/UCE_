@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class ejercicioFor2 {
     public static void main(String[] args) {
         // !! Resolver bug cuando se pueda !!
-
+        // pero cual es el bug JAJJAJ
 
 
         
