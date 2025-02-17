@@ -22,6 +22,15 @@ public class mainProject {
         }
 
         System.out.println("");
+        System.out.println("La matriz original es: ");
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print("| " + matriz[i][j]);
+            }
+            System.out.println(" ");
+        }
+        
+        System.out.println("");
         System.out.println("Quieres imprimir filas o columnas de tu matriz: ");
         System.out.println("[1] Filas.");
         System.out.println("[2] Columnas: ");
@@ -52,14 +61,7 @@ public class mainProject {
                 }
                 break;
         }
-        System.out.println("");
-        System.out.println("La matriz original es: ");
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                System.out.print("| " + matriz[i][j]);
-            }
-            System.out.println(" ");
-        }
+        
         entrada.close();
     }
 }
