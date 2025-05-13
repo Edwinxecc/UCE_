@@ -1,0 +1,24 @@
+# Archivos compilados
+*.class
+
+#carpetas de build
+/build/
+/out/
+/target/
+
+#Archivos del Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+#IDEs
+.idea/
+*.iml
+.vscode/
+*.swp
+
+#logs
+*.log
+
+#Archivos de entorno
+.env
