@@ -6,13 +6,13 @@ public class Empleado {
     private int idEmpleado;
     private String nombre;
     private String apellido;
-    private int salarioMensual;
+    private double salarioMensual;
 
-    public Empleado(int idEmpleado, String nombre, String apellido, int salarioMensual){
+    public Empleado(int idEmpleado, String nombre, String apellido, int horasTrabajadas){
         this.idEmpleado = idEmpleado;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.salarioMensual = salarioMensual;
+        this.salarioMensual = calcularSalarioMensual(horasTrabajadas);
     }
 
     public int getIdEmpleado() {
@@ -39,17 +39,35 @@ public class Empleado {
         this.apellido = apellido;
     }
 
-    public int getSalarioMensual() {
-        return salarioMensual;
+    public double getSalarioMensual() {
+        return this.salarioMensual;
     }
 
-    public void setSalarioMensual(int salarioMensual) {
-        this.salarioMensual = salarioMensual;
-    }
 
     public double calcularSalarioMensual(double horasTrabajadas){
         final double costoHoraTrabajo = 3.88;
         return horasTrabajadas * costoHoraTrabajo;
+    }
+
+    public boolean[] validarNombreApellido(){
+        String numbers = "0123456789";
+        boolean [] validation = new boolean[2];
+        validation[0] = true; // nombre es validdo o no
+        validation[1] = true; // apellido valido
+        for (int i = 0; i < this.nombre.length(); i++) {
+
+            for (int j = 0; j < numbers.length(); j++) {
+                if ((this.nombre.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
+                    validation[0] = false;
+                }
+                if ((this.apellido.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
+                    validation[1] = false;
+                }
+            }
+
+        }
+
+        return validation;
     }
 }
 

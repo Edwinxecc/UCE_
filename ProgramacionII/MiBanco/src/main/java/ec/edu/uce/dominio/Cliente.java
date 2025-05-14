@@ -55,5 +55,36 @@ public class Cliente {
     }
 
     //metodos
+    public boolean validarCorreo(){
+        String correoTemp = this.correo, dominio = "";
+        for (int i = 0; i < correoTemp.length(); i++) {
+            if ((correoTemp.charAt(i)+"").equalsIgnoreCase("@")){
+                dominio = correoTemp.substring(i);
+                break;
+            }
+        }
+        return dominio.equalsIgnoreCase("@uce.edu.ec");
+    }
+
+    public boolean[] validarNombreApellido(){
+        String numbers = "0123456789";
+        boolean [] validation = new boolean[2];
+        validation[0] = true; // nombre es validdo o no
+        validation[1] = true; // apellido valido
+        for (int i = 0; i < this.nombre.length(); i++) {
+
+            for (int j = 0; j < numbers.length(); j++) {
+                if ((this.nombre.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
+                    validation[0] = false;
+                }
+                if ((this.apellido.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
+                    validation[1] = false;
+                }
+            }
+
+        }
+
+        return validation;
+    }
 
 }
