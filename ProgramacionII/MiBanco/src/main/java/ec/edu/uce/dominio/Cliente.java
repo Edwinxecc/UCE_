@@ -3,26 +3,25 @@ package ec.edu.uce.dominio;
 import java.util.Date;
 
 public class Cliente {
-    Date currentDate = new Date();
     private int clienteId;
     private String nombre;
     private String apellido;
     private String correo;
     private Date fechaRegistro;
 
-    public Cliente (int clienteId, String nombre, String apellido, String correo){
+    public Cliente(int clienteId, String nombre, String apellido, String correo) {
         this.clienteId = clienteId;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
-        this.fechaRegistro = currentDate;
+        this.fechaRegistro = new Date(); // Fecha actual al momento de crear el cliente
     }
 
-    public int getClienteId() {
+    public int getIdCliente() {
         return clienteId;
     }
 
-    public void setClienteId(int clienteId) {
+    public void setIdCliente(int clienteId) {
         this.clienteId = clienteId;
     }
 
@@ -54,37 +53,33 @@ public class Cliente {
         this.fechaRegistro = fechaRegistro;
     }
 
-    //metodos
-    public boolean validarCorreo(){
-        String correoTemp = this.correo, dominio = "";
-        for (int i = 0; i < correoTemp.length(); i++) {
-            if ((correoTemp.charAt(i)+"").equalsIgnoreCase("@")){
-                dominio = correoTemp.substring(i);
+    public boolean validarCorreo() {
+        int atIndex = correo.indexOf('@');
+        if (atIndex != -1) {
+            String dominio = correo.substring(atIndex);
+            return dominio.equalsIgnoreCase("@uce.edu.ec");
+        }
+        return false;
+    }
+
+    public boolean[] validarNombreApellido() {
+        String numeros = "0123456789";
+        boolean[] validaciones = {true, true};
+
+        for (char c : this.nombre.toCharArray()) {
+            if (numeros.contains(String.valueOf(c))) {
+                validaciones[0] = false;
                 break;
             }
         }
-        return dominio.equalsIgnoreCase("@uce.edu.ec");
-    }
 
-    public boolean[] validarNombreApellido(){
-        String numbers = "0123456789";
-        boolean [] validation = new boolean[2];
-        validation[0] = true; // nombre es validdo o no
-        validation[1] = true; // apellido valido
-        for (int i = 0; i < this.nombre.length(); i++) {
-
-            for (int j = 0; j < numbers.length(); j++) {
-                if ((this.nombre.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
-                    validation[0] = false;
-                }
-                if ((this.apellido.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
-                    validation[1] = false;
-                }
+        for (char c : this.apellido.toCharArray()) {
+            if (numeros.contains(String.valueOf(c))) {
+                validaciones[1] = false;
+                break;
             }
-
         }
 
-        return validation;
+        return validaciones;
     }
-
 }

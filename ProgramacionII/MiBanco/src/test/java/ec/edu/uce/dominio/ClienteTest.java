@@ -1,50 +1,97 @@
 package ec.edu.uce.dominio;
 
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClienteTest {
 
-    @org.junit.jupiter.api.Test
-    void getClienteId() {
+    @Test
+    void testGetIdCliente() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        assertEquals(123, cliente.getIdCliente());
     }
 
-    @org.junit.jupiter.api.Test
-    void setClienteId() {
+    @Test
+    void testSetIdCliente() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        cliente.setIdCliente(456);
+        assertEquals(456, cliente.getIdCliente());
     }
 
-    @org.junit.jupiter.api.Test
-    void getNombre() {
+    @Test
+    void testGetNombre() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        assertEquals("Edwin", cliente.getNombre());
     }
 
-    @org.junit.jupiter.api.Test
-    void setNombre() {
+    @Test
+    void testSetNombre() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        cliente.setNombre("Carlos");
+        assertEquals("Carlos", cliente.getNombre());
     }
 
-    @org.junit.jupiter.api.Test
-    void getApellido() {
+    @Test
+    void testGetApellido() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        assertEquals("Caiza", cliente.getApellido());
     }
 
-    @org.junit.jupiter.api.Test
-    void setApellido() {
+    @Test
+    void testSetApellido() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        cliente.setApellido("Paredes");
+        assertEquals("Paredes", cliente.getApellido());
     }
 
-    @org.junit.jupiter.api.Test
-    void getCorreo() {
+    @Test
+    void testGetCorreo() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        assertEquals("edcaizac1@uce.edu.ec", cliente.getCorreo());
     }
 
-    @org.junit.jupiter.api.Test
-    void getFechaRegistro() {
+    @Test
+    void testGetFechaRegistro() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        assertNotNull(cliente.getFechaRegistro());
     }
 
-    @org.junit.jupiter.api.Test
-    void setFechaRegistro() {
+    @Test
+    void testSetFechaRegistro() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        Date nuevaFecha = new Date();
+        cliente.setFechaRegistro(nuevaFecha);
+        assertEquals(nuevaFecha, cliente.getFechaRegistro());
     }
 
-    @org.junit.jupiter.api.Test
-    void validarCorreo() {
+    @Test
+    void testValidarCorreoValido() {
+        Cliente cliente = new Cliente(123, "Edwin", "Caiza", "edcaizac1@uce.edu.ec");
+        assertTrue(cliente.validarCorreo());
     }
 
-    @org.junit.jupiter.api.Test
-    void validarNombreApellido() {
+    @Test
+    void testValidarCorreoInvalido() {
+        Cliente cliente = new Cliente(124, "Luis", "Gomez", "luis@gmail.com");
+        assertFalse(cliente.validarCorreo());
+    }
+
+    @Test
+    void testValidarNombreApellidoCorrecto() {
+        Cliente cliente = new Cliente(125, "Maria", "Lopez", "maria@uce.edu.ec");
+        boolean[] validaciones = cliente.validarNombreApellido();
+        assertTrue(validaciones[0]);
+        assertTrue(validaciones[1]);
+    }
+
+    @Test
+    void testValidarNombreApellidoConNumeros() {
+        Cliente cliente = new Cliente(126, "Ju4n", "Ca1za", "juan@uce.edu.ec");
+        boolean[] validaciones = cliente.validarNombreApellido();
+        assertFalse(validaciones[0]);
+        assertFalse(validaciones[1]);
     }
 }

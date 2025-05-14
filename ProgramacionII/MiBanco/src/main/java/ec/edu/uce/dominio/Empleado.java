@@ -1,14 +1,12 @@
 package ec.edu.uce.dominio;
 
-
-
 public class Empleado {
     private int idEmpleado;
     private String nombre;
     private String apellido;
     private double salarioMensual;
 
-    public Empleado(int idEmpleado, String nombre, String apellido, int horasTrabajadas){
+    public Empleado(int idEmpleado, String nombre, String apellido, int horasTrabajadas) {
         this.idEmpleado = idEmpleado;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -43,31 +41,29 @@ public class Empleado {
         return this.salarioMensual;
     }
 
-
-    public double calcularSalarioMensual(double horasTrabajadas){
+    public double calcularSalarioMensual(double horasTrabajadas) {
         final double costoHoraTrabajo = 3.88;
         return horasTrabajadas * costoHoraTrabajo;
     }
 
-    public boolean[] validarNombreApellido(){
-        String numbers = "0123456789";
-        boolean [] validation = new boolean[2];
-        validation[0] = true; // nombre es validdo o no
-        validation[1] = true; // apellido valido
-        for (int i = 0; i < this.nombre.length(); i++) {
+    public boolean[] validarNombreApellido() {
+        String numeros = "0123456789";
+        boolean[] validaciones = {true, true};
 
-            for (int j = 0; j < numbers.length(); j++) {
-                if ((this.nombre.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
-                    validation[0] = false;
-                }
-                if ((this.apellido.charAt(i)+"").equalsIgnoreCase(numbers.charAt(j)+"")){
-                    validation[1] = false;
-                }
+        for (char c : this.nombre.toCharArray()) {
+            if (numeros.contains(String.valueOf(c))) {
+                validaciones[0] = false;
+                break;
             }
-
         }
 
-        return validation;
+        for (char c : this.apellido.toCharArray()) {
+            if (numeros.contains(String.valueOf(c))) {
+                validaciones[1] = false;
+                break;
+            }
+        }
+
+        return validaciones;
     }
 }
-
