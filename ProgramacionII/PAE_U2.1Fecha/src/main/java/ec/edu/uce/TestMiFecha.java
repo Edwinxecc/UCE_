@@ -20,6 +20,8 @@ public class TestMiFecha {
             System.out.println("[3] Probar Getters");
             System.out.println("[4] Probar Setters");
             System.out.println("[5] Validar Fecha");
+            System.out.println("[6] Fibonacci Iterativo");
+            System.out.println("[7] Fibonacci Recursivo");
             System.out.println("[0] Salir");
              opcion = sc.nextInt();
 
@@ -40,6 +42,18 @@ public class TestMiFecha {
                     probarFechaValida(fecha);
                     fecha = new MiFecha(30, 2, 2020);
                     probarFechaValida(fecha);
+                    break;
+                case 6:
+                    int numero;
+                    System.out.println("\n\nIngrese un numero: ");
+                    numero = sc.nextInt();
+                    System.out.println("Fibonacci Iterativo de " + numero + " es: " + fibonacciIterativo(numero));
+                    break;
+                case 7:
+                    int numero2;
+                    System.out.println("\n\nIngrese un numero: ");
+                    numero2 = sc.nextInt();
+                    System.out.println("Fibonacci Recursivo de " + numero2 + " es: " + fibonacciIterativo(numero2));
                     break;
                 default:
                     if (opcion == 0) {
@@ -87,4 +101,23 @@ public class TestMiFecha {
         System.out.println("Fecha: " + f.getDia() + "/" + f.getMes() + "/" + f.getAnio());
         System.out.println("¿Es válida? " + f.fechaValida());
     }
+
+    public static int fibonacciIterativo(int n) {
+        //sin recursividad
+        if (n <= 1) return n;
+        int a = 0, b = 1;
+        int resultado = 0;
+        for (int i = 2; i <= n; i++) {
+            resultado = a + b;
+            a = b;
+            b = resultado;
+        }
+        return resultado;
+    }
+
+    public static int fibonacciRecursivo(int n) {
+        if (n <= 1) return n;
+        return fibonacciRecursivo(n - 1) + fibonacciRecursivo(n - 2);
+    }
+
 }
