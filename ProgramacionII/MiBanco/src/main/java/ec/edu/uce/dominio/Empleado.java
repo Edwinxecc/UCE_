@@ -6,6 +6,10 @@ public class Empleado {
     private String apellido;
     private double salarioMensual;
 
+    public Empleado(){
+
+    }
+
     public Empleado(int idEmpleado, String nombre, String apellido, int horasTrabajadas) {
         this.idEmpleado = idEmpleado;
         this.nombre = nombre;
@@ -65,5 +69,10 @@ public class Empleado {
         }
 
         return validaciones;
+    }
+
+    @Override
+    public String toString() {
+        return "bueno";
     }
 }
