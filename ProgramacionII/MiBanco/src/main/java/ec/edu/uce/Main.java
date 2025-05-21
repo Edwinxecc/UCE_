@@ -1,5 +1,6 @@
 package ec.edu.uce;
 
+import ec.edu.uce.dominio.Banco;
 import ec.edu.uce.dominio.Cliente;
 import ec.edu.uce.dominio.Empleado;
 
@@ -11,6 +12,7 @@ public class Main {
         System.out.println(obj.getApellido());
         System.out.println(obj.validarCorreo());
 
-
+        Banco obj1 = new Banco();
+        obj1.agreagarEmpleado();
     }
 }

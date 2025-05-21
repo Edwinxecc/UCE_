@@ -7,5 +7,10 @@ public class TestEmpleado {
         System.out.println(empleado);
 
         Manager manager = new Manager();
+        manager.incrementarSalario(1000);
+        System.out.println(manager);
+
+        Empleado empleado1= new Manager();
+
     }
 }
