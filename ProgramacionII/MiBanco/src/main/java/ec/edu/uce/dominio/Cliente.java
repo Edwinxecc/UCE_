@@ -12,14 +12,8 @@ public class Cliente {
     private String correo;
     private Fecha fechaRegistro;
     private Genero genero;
-
-    // Asociación con hasta 5 cuentas sin usar arrays
-    private Cuenta cuenta1;
-    private Cuenta cuenta2;
-    private Cuenta cuenta3;
-    private Cuenta cuenta4;
-    private Cuenta cuenta5;
-    private int numeroCuentas; // Contador de cuentas activas
+    private int numCuentas;
+    private Cuenta cuentas[];
 
     /**
      * Constructor por defecto que inicializa los atributos con valores predeterminados.
@@ -30,8 +24,9 @@ public class Cliente {
         this.apellido = "Sin apellido";
         this.correo = "Sin correo";
         this.fechaRegistro = new Fecha();
-        this.genero = Genero.FEMENINO;
-        this.numeroCuentas = 0;
+        this.genero = Genero.MASCULINO;
+        this.numCuentas = 0;
+        this.cuentas = new Cuenta[3];
     }
 
     /**
@@ -44,7 +39,6 @@ public class Cliente {
         this.correo = "Sin correo";
         this.fechaRegistro = new Fecha();
         this.genero = genero;
-        this.numeroCuentas = 0;
     }
 
     /**
@@ -57,7 +51,6 @@ public class Cliente {
         this.genero = genero;
         this.correo = correo;
         this.fechaRegistro = fechaRegistro;
-        this.numeroCuentas = 0;
     }
 
     /**
@@ -72,13 +65,6 @@ public class Cliente {
                 nuevoCliente.fechaRegistro.getMes(),
                 nuevoCliente.fechaRegistro.getAnio());
         this.genero = nuevoCliente.genero;
-        this.numeroCuentas = nuevoCliente.numeroCuentas;
-        // Copiar cuentas si existen
-        this.cuenta1 = nuevoCliente.cuenta1;
-        this.cuenta2 = nuevoCliente.cuenta2;
-        this.cuenta3 = nuevoCliente.cuenta3;
-        this.cuenta4 = nuevoCliente.cuenta4;
-        this.cuenta5 = nuevoCliente.cuenta5;
     }
 
     // Getters y setters básicos
@@ -104,8 +90,28 @@ public class Cliente {
     public Genero getGenero() { return genero; }
     public void setGenero(Genero genero) { this.genero = genero; }
 
-    public int getNumeroCuentas() { return numeroCuentas; }
+    public void agregarCuenta(double saldo){
+        if (numCuentas == cuentas.length){
+            Cuenta [] aux = cuentas;
+            cuentas = new Cuenta[numCuentas+1];
+            System.arraycopy(aux, 0, cuentas, 0, numCuentas);
+        }
+        cuentas[numCuentas] = new Cuenta(saldo);
+        numCuentas++;
+    }
 
+    //metodo con sobre carga
+    public void agregarCuenta(Cuenta nuevaCuenta){
+        if (numCuentas == cuentas.length){
+            Cuenta [] aux = cuentas;
+            cuentas = new Cuenta[numCuentas+1];
+            System.arraycopy(aux, 0, cuentas, 0, numCuentas);
+        }
+        cuentas[numCuentas] = nuevaCuenta;
+        numCuentas++;
+    }
+
+    //redimencionar arreglos con system array copy
 
     @Override
     public String toString() {

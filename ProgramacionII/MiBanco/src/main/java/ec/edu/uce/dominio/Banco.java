@@ -529,6 +529,17 @@ public class Banco {
         return correo.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
     }
 
+    public boolean validarEmpleado(Empleado empleados){
+        boolean respuesta = false;
+        for (Empleado em: empleados){
+            if (em.equals(empleados)){
+                respuesta = true;
+                break;
+            }
+        }
+        return respuesta;
+    }
+
     /**
      * Verifica si la fecha es futura comparada con la fecha actual.
      *

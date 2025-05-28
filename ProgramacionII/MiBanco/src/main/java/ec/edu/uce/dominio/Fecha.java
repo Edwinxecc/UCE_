@@ -3,7 +3,7 @@ package ec.edu.uce.dominio;
  * Clase que representa una fecha con día, mes y año.
  * Incluye validaciones para garantizar que la fecha sea correcta.
  *
- * @author Samanta Tuqueres
+ * @author Edwin Caiza
  */
 public class Fecha {
     private int dia;

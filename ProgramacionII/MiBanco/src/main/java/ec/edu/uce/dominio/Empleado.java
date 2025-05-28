@@ -1,5 +1,7 @@
 package ec.edu.uce.dominio;
 
+import java.util.Objects;
+
 import static ec.edu.uce.dominio.Banco.esCorreoValido;
 
 /**
@@ -7,7 +9,7 @@ import static ec.edu.uce.dominio.Banco.esCorreoValido;
  * Contiene atributos y métodos para gestionar la información de un empleado.
  * Esta clase está diseñada para integrarse con la clase Banco.
  *
- * @author Samanta Tuqueres
+ * @author Edwin Caiza
  */
 public class Empleado {
     private int id;
@@ -19,6 +21,7 @@ public class Empleado {
     private double salario;
     private String puesto;
     public static final double SALARIO_BASICO = 500.0;
+    Fecha fecha = new Fecha(9,3, 2006);
 
     /**
      * Constructor parametrizado para crear un empleado completo.
@@ -67,14 +70,7 @@ public class Empleado {
      * Inicializa valores básicos para evitar errores al extender la clase.
      */
     public Empleado() {
-        this.id = 0;
-        this.nombre = "Sin nombre";
-        this.apellido = "Sin apellido";
-        this.genero = null;
-        this.correo = null;
-        this.fechaIngreso = null;
-        this.salario = 0.0;
-        this.puesto = "No definido";
+        this(1, "Sin nombre", "Sin apellido", Genero.MASCULINO, "example@org.edu", fecha);
     }
 
     // Getters y setters con validaciones
@@ -186,5 +182,13 @@ public class Empleado {
         Empleado empleado = (Empleado) o;
         return nombre.equals(empleado.nombre) &&
                 apellido.equals(empleado.apellido);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 9;
+        hash = 3 * hash + Objects.hashCode(this.getNombre());
+        hash = 3 *  hash + Objects.hashCode(this.getApellido());
+        return hash;
     }
 }
