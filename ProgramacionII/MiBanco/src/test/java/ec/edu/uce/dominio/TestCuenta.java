@@ -8,7 +8,7 @@ public class TestCuenta {
         nueva.deposito(150);
         System.out.println(nueva.getSaldo());
         nueva.retiro(100);
-        System.out.println(nueva.getSaldo() - 100);
+        System.out.println(nueva.getSaldo());
 
     }
 }
