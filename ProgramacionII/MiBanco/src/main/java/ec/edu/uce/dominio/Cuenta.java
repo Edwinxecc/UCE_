@@ -17,14 +17,13 @@ public class Cuenta {
      * Constructor con argumentos para inicializar la cuenta.
      */
     public Cuenta(double initBalance) {
-        this.balance = setBalance(initBalance);
+        this.balance = initBalance;
     }
 
-    public double setBalance(double balance) {
-        if (balance > 0){
-            this.balance = balance;
+    public void setBalance(double monto) {
+        if (monto > 0) {
+            this.balance = monto;
         }
-        return this.balance;
     }
 
     public double getBalance() {
@@ -33,15 +32,15 @@ public class Cuenta {
 
     public void deposito(double monto){
         if (monto > 0){
-            this.balance = setBalance(monto);
+            this.balance += monto;
         }
     }
 
     public void retiro(double monto){
         double temp = 0;
-        if (monto <= getBalance() && monto > 0){
+        if (monto <= this.balance && monto > 0){
             temp = this.balance - monto;
-            this.balance = setBalance(temp);
+            setBalance(temp);
         }
     }
 

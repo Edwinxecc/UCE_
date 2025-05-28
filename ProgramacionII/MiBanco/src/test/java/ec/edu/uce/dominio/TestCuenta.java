@@ -1,14 +1,14 @@
 package ec.edu.uce.dominio;
- import  ec.edu.uce.dominio.Cuenta;
+
 public class TestCuenta {
     public static void main(String[] args) {
-        Cliente nuevo = new Cliente();
-        Cuenta nueva = new Cuenta(100);
-        System.out.println(nueva.getSaldo());
-        nueva.deposito(150);
-        System.out.println(nueva.getSaldo());
-        nueva.retiro(100);
-        System.out.println(nueva.getSaldo());
-
+        Cuenta cuenta = new Cuenta(100);
+        System.out.println("Saldo inicial: "+ cuenta.getBalance());
+        System.out.println("Deposito de: 150");
+        cuenta.deposito(150);
+        System.out.println("Saldo: " + cuenta.getBalance());
+        cuenta.retiro(100);
+        System.out.println("Retiro de: 100");
+        System.out.println("Saldo: " + cuenta.getBalance());
     }
 }
