@@ -6,565 +6,545 @@ package ec.edu.uce.dominio;
  * @author Edwin Caiza
  */
 public class Banco {
-    /**
-     * ATRIBUTOS
-     */
-    private String nombre;
-    private int id;
-    private static Cliente[] clientes;      // Variable estática
-    private static Empleado[] empleados;    // Variable estática
-    private static int numClientes;         // Variable estática
-    private static int numEmpleados;        // Variable estática
-    // Bloque estático para inicializar los arreglos de clientes y empleados
-    static {
-        clientes = new Cliente[3];          // Inicializa clientes con un arreglo de tamaño 3
-        empleados = new Empleado[3];        // Inicializa empleados con un arreglo de tamaño 3
-        numClientes = 0;
-        numEmpleados = 0;
-    }
-    /**
-     * CONSTRUCTO VACIO  que inicializa el banco con valores predeterminados.
-     */
+    // Atributos del banco
+    private String nombreBanco;
+    private String direccion;
+    private String telefono;
+    private String codigoBanco;
+
+    // ASOCIACIÓN CON EMPLEADOS
+
+    private Empleado[] staff;
+
+    private int numEmpleados;
+
+    // ASOCIACIÓN CON CLIENTES
+
+    private Cliente[] clientes;
+
+    private int numClientes;
+
+    // CONSTANTES
+
+    private static final int CAPACIDAD_INICIAL_DEFAULT = 5;
+
+    private static final int INCREMENTO_CAPACIDAD = 3;
+
+    // CONSTRUCTORES
+
     public Banco() {
-        this("sin nombre", 1, new Cliente[3], new Empleado[3], 0, 0);
-    }
-    /**
-     * Constructor parametrizado para inicializar el banco.
-     *
-     * @param nombre Nombre del banco
-     * @param id Identificador del banco
-     * @param clientes Arreglo de clientes
-     * @param empleados Arreglo de empleados
-     * @param numClientes Número de clientes
-     * @param numEmpleados Número de empleados
-     */
-    public Banco(String nombre, int id, Cliente[] clientes, Empleado[] empleados, int numClientes, int numEmpleados) {
-        this.nombre = nombre;
-        this.id = id;
-        this.clientes = clientes;
-        this.empleados = empleados;
-        this.numClientes = numClientes;
-        this.numEmpleados = numEmpleados;
+        this(CAPACIDAD_INICIAL_DEFAULT);
     }
 
-    /**
-     * METODOS GETTERS Y SETTERS
-     */
-    /**
 
-     * Obtiene el nombre del banco.
-     *
-     * @return Nombre del banco
-     */
-
-    public String getNombre() {
-        return nombre;
-    }
-    /**
-     * Establece el nombre del banco.
-     *
-     * @param nombre Nuevo nombre del banco
-     */
-
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
+    public Banco(int capacidadInicial) {
+        if (capacidadInicial <= 0) {
+            capacidadInicial = CAPACIDAD_INICIAL_DEFAULT;
+            System.out.println("Advertencia: Capacidad inicial inválida, usando valor por defecto (" + CAPACIDAD_INICIAL_DEFAULT + ")");
         }
-        this.nombre = nombre;
+
+        // Inicializar información básica del banco
+        this.nombreBanco = "Banco Sin Nombre";
+        this.direccion = "";
+        this.telefono = "";
+        this.codigoBanco = "000";
+
+        // Inicializar arrays y contadores
+        this.clientes = new Cliente[capacidadInicial];
+        this.staff = new Empleado[capacidadInicial];
+        this.numClientes = 0;
+        this.numEmpleados = 0;
     }
 
-    /**
-     * Obtiene el ID del banco.
-     *
-     * @return ID del banco
-     */
-    public int getId() {
-        return id;
-    }
-    /**
-     * Establece el ID del banco.
-     *
-     * @param id Nuevo ID del banco
-     */
-    public void setId(int id) {
-        if (id < 0) {
-            throw new IllegalArgumentException("El ID no puede ser negativo.");
-        }
-        this.id = id;
+
+    public Banco(String nombreBanco, String codigoBanco, int capacidadInicial) {
+        this(capacidadInicial);
+        setNombreBanco(nombreBanco);
+        setCodigoBanco(codigoBanco);
     }
 
-    /**
-     * Obtiene un cliente en un índice específico.
-     *
-     * @param indice Índice del cliente
-     * @return Cliente encontrado, o null si el índice es inválido
-     */
-    public Cliente getCliente(int indice) {
-        if (indice >= 0 && indice < numClientes) {
-            return clientes[indice];
+    public Banco(String nombreBanco, String direccion, String telefono, String codigoBanco, int capacidadInicial) {
+        this(capacidadInicial);
+        setNombreBanco(nombreBanco);
+        setDireccion(direccion);
+        setTelefono(telefono);
+        setCodigoBanco(codigoBanco);
+    }
+
+    // MÉTODOS GET Y SET PARA INFORMACIÓN BÁSICA DEL BANCO
+
+    public String getNombreBanco() {
+        return nombreBanco;
+    }
+
+    public void setNombreBanco(String nombreBanco) {
+        if (nombreBanco != null && !nombreBanco.trim().isEmpty()) {
+            this.nombreBanco = nombreBanco;
+        } else {
+            System.out.println("Error: Nombre de banco inválido");
+            this.nombreBanco = "Banco Sin Nombre";
         }
-        return null;
     }
-    /**
-     * Obtiene el número de empleados del banco.
-     *
-     * @return Número de empleados
-     */
-    public int getNumEmpleados() {
-        return numEmpleados;
+
+    public String getDireccion() {
+        return direccion;
     }
-    /**
-     * Obtiene el número de clientes del banco.
-     *
-     * @return Número de clientes
-     */
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion != null ? direccion : "";
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        if (telefono != null && telefono.matches("\\d{10}")) {
+            this.telefono = telefono;
+        } else if (telefono != null && !telefono.isEmpty()) {
+            System.out.println("Advertencia: Formato de teléfono del banco no válido");
+            this.telefono = telefono; // Se acepta pero con advertencia
+        } else {
+            this.telefono = "";
+        }
+    }
+
+    public String getCodigoBanco() {
+        return codigoBanco;
+    }
+
+    public void setCodigoBanco(String codigoBanco) {
+        if (codigoBanco != null && !codigoBanco.trim().isEmpty()) {
+            this.codigoBanco = codigoBanco;
+        } else {
+            System.out.println("Error: Código de banco inválido");
+            this.codigoBanco = "000";
+        }
+    }
+
+    // MÉTODOS GET PARA CONTADORES
+
+
     public int getNumClientes() {
         return numClientes;
     }
-    /**
-     * Obtiene el arreglo de empleados.
-     *
-     * @return Arreglo de empleados
-     */
-    public Empleado[] getEmpleados() {
-        return empleados;
+
+
+    public int getNumEmpleados() {
+        return numEmpleados;
     }
-    /**
-     * Establece el número de clientes del banco.
-     *
-     * @param numClientes Nuevo número de clientes
-     */
-    public void setNumClientes(int numClientes) {
-        this.numClientes = numClientes;
+    public int getCapacidadClientes() {
+        return clientes.length;
     }
 
-    /**
-     * Establece el número de empleados del banco.
-     *
-     * @param numEmpleados Nuevo número de empleados
-     */
-    public void setNumEmpleados(int numEmpleados) {
-        this.numEmpleados = numEmpleados;
+
+    public int getCapacidadEmpleados() {
+        return staff.length;
     }
 
-    /**
-     * Relación entre Banco y Cliente/Empleado
-     */
-    public void setClientes(Cliente[] clientes) {
-        if (clientes == null || clientes.length == 0) {
-            System.out.println("Error: El arreglo de clientes no puede estar vacío.");
+    // MÉTODOS PRIVADOS DE VALIDACIÓN Y UTILIDAD
+
+
+    private boolean existeClienteId(int id) {
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getClienteId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean existeEmpleadoId(int id) {
+        for (int i = 0; i < numEmpleados; i++) {
+            if (staff[i] != null && staff[i].getEmpleadoId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void ampliarCapacidadClientes() {
+        Cliente[] nuevoArray = new Cliente[clientes.length + INCREMENTO_CAPACIDAD];
+        System.arraycopy(clientes, 0, nuevoArray, 0, numClientes);
+        clientes = nuevoArray;
+        System.out.println("Capacidad de clientes ampliada a: " + clientes.length);
+    }
+
+    private void ampliarCapacidadEmpleados() {
+        Empleado[] nuevoArray = new Empleado[staff.length + INCREMENTO_CAPACIDAD];
+        System.arraycopy(staff, 0, nuevoArray, 0, numEmpleados);
+        staff = nuevoArray;
+        System.out.println("Capacidad de empleados ampliada a: " + staff.length);
+    }
+
+    private boolean esPosicionValidaCliente(int pos) {
+        return pos >= 0 && pos < numClientes;
+    }
+
+    // ============================================================================
+    // MÉTODOS PRINCIPALES DE ASOCIACIÓN CON CLIENTES (CRUD)
+    // ============================================================================
+
+    public boolean nuevoCliente(Cliente c) {
+        // Validar que el cliente no sea nulo
+        if (c == null) {
+            System.out.println("Error: No se puede agregar un cliente nulo");
+            return false;
+        }
+
+        // Validar que el ID no exista ya
+        if (existeClienteId(c.getClienteId())) {
+            System.out.println("Error: Ya existe un cliente con ID " + c.getClienteId());
+            return false;
+        }
+
+        // Ampliar el array si es necesario
+        if (numClientes >= clientes.length) {
+            ampliarCapacidadClientes();
+        }
+
+        // Agregar el cliente al array
+        clientes[numClientes] = c;
+        numClientes++;
+        System.out.println("Cliente agregado exitosamente: " + c.getNombre() + " " + c.getApellido());
+        return true;
+    }
+
+    public String consultarClientes() {
+        if (numClientes == 0) {
+            return "No hay clientes registrados en " + nombreBanco;
+        }
+
+        StringBuilder texto = new StringBuilder();
+        texto.append("=== LISTADO DE CLIENTES - ").append(nombreBanco.toUpperCase()).append(" ===\n");
+        texto.append("Total de clientes: ").append(numClientes).append("\n");
+        texto.append("-".repeat(60)).append("\n");
+
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null) {
+                texto.append("[").append(String.format("%2d", i)).append("] ").append(clientes[i]).append("\n");
+            }
+        }
+
+        return texto.toString();
+    }
+
+    public boolean editarCliente(int p, Cliente c) {
+        // Validar posición
+        if (!esPosicionValidaCliente(p)) {
+            System.out.println("Error: Posición inválida para editar cliente (" + p + ")");
+            return false;
+        }
+
+        // Validar que el nuevo cliente no sea nulo
+        if (c == null) {
+            System.out.println("Error: No se puede editar con un cliente nulo");
+            return false;
+        }
+
+        // Verificar que el nuevo ID no exista ya (excepto si es el mismo cliente)
+        if (clientes[p].getClienteId() != c.getClienteId() && existeClienteId(c.getClienteId())) {
+            System.out.println("Error: No se puede editar, el ID " + c.getClienteId() + " ya existe en otro cliente");
+            return false;
+        }
+
+        // Reemplazar el cliente
+        Cliente clienteAnterior = clientes[p];
+        clientes[p] = c;
+        System.out.println("Cliente actualizado exitosamente:");
+        System.out.println("  Anterior: " + clienteAnterior.getNombre() + " " + clienteAnterior.getApellido());
+        System.out.println("  Nuevo: " + c.getNombre() + " " + c.getApellido());
+        return true;
+    }
+
+    public boolean eliminarCliente(int p) {
+        // Validar posición
+        if (!esPosicionValidaCliente(p)) {
+            System.out.println("Error: Posición inválida para eliminar cliente (" + p + ")");
+            return false;
+        }
+
+        // Guardar información del cliente eliminado para el mensaje
+        Cliente clienteEliminado = clientes[p];
+
+        // Desplazar elementos hacia la izquierda para eliminar el cliente
+        for (int i = p; i < numClientes - 1; i++) {
+            clientes[i] = clientes[i + 1];
+        }
+
+        // Limpiar la última posición y decrementar contador
+        clientes[numClientes - 1] = null;
+        numClientes--;
+
+        System.out.println("Cliente eliminado exitosamente: " +
+                clienteEliminado.getNombre() + " " + clienteEliminado.getApellido() +
+                " (ID: " + clienteEliminado.getClienteId() + ")");
+        return true;
+    }
+
+    public Cliente buscarCliente(int p) {
+        if (esPosicionValidaCliente(p)) {
+            return clientes[p];
         } else {
-            this.clientes = clientes;
+            System.out.println("Error: Posición inválida (" + p + ") para buscar cliente");
+            return null;
         }
     }
 
-    public void setEmpleados(Empleado[] empleados) {
-        if (empleados == null || empleados.length == 0) {
-            System.out.println("Error: El arreglo de empleados no puede estar vacío.");
-        } else {
-            this.empleados = empleados;
+    // ============================================================================
+    // MÉTODOS ADICIONALES DE BÚSQUEDA Y CONSULTA DE CLIENTES
+    // ============================================================================
+
+    /**
+     * Busca un cliente por su ID único
+     *
+     * @param id ID del cliente a buscar
+     * @return Cliente encontrado o null si no existe
+     */
+    public Cliente buscarClientePorId(int id) {
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getClienteId() == id) {
+                return clientes[i];
+            }
         }
+        System.out.println("No se encontró cliente con ID: " + id);
+        return null;
     }
 
     /**
-     * METODO TO STRING
+     * Obtiene la posición de un cliente por su ID
+     *
+     * @param id ID del cliente a buscar
+     * @return Posición del cliente o -1 si no se encuentra
      */
+    public int obtenerPosicionClientePorId(int id) {
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getClienteId() == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /**
-     * Representación en cadena del objeto Banco.
+     * Filtra clientes por género
      *
-     * @return String con los detalles del banco
+     * @param genero Género por el cual filtrar
+     * @return Cadena con el listado de clientes del género especificado
      */
+    public String consultarClientesPorGenero(Genero genero) {
+        if (numClientes == 0) {
+            return "No hay clientes registrados en " + nombreBanco;
+        }
+
+        StringBuilder texto = new StringBuilder();
+        texto.append("=== CLIENTES DE GÉNERO ").append(genero.getNombre().toUpperCase()).append(" - ").append(nombreBanco.toUpperCase()).append(" ===\n");
+
+        int contador = 0;
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getGenero() == genero) {
+                if (contador == 0) {
+                    texto.append("-".repeat(60)).append("\n");
+                }
+                texto.append("[").append(String.format("%2d", i)).append("] ").append(clientes[i]).append("\n");
+                contador++;
+            }
+        }
+
+        if (contador == 0) {
+            return "No hay clientes registrados del género " + genero.getNombre() + " en " + nombreBanco;
+        } else {
+            texto.insert(texto.indexOf("===") + texto.substring(texto.indexOf("===")).indexOf("\n") + 1,
+                    "Total encontrados: " + contador + "\n");
+        }
+
+        return texto.toString();
+    }
+
+    public String buscarClientesPorNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return "Error: Debe proporcionar un nombre para buscar";
+        }
+
+        if (numClientes == 0) {
+            return "No hay clientes registrados en " + nombreBanco;
+        }
+
+        StringBuilder texto = new StringBuilder();
+        texto.append("=== BÚSQUEDA DE CLIENTES POR NOMBRE: '").append(nombre.toUpperCase()).append("' ===\n");
+
+        int contador = 0;
+        String nombreBusqueda = nombre.toLowerCase();
+
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null) {
+                String nombreCompleto = (clientes[i].getNombre() + " " + clientes[i].getApellido()).toLowerCase();
+                if (nombreCompleto.contains(nombreBusqueda)) {
+                    if (contador == 0) {
+                        texto.append("-".repeat(60)).append("\n");
+                    }
+                    texto.append("[").append(String.format("%2d", i)).append("] ").append(clientes[i]).append("\n");
+                    contador++;
+                }
+            }
+        }
+
+        if (contador == 0) {
+            return "No se encontraron clientes con el nombre '" + nombre + "' en " + nombreBanco;
+        } else {
+            texto.insert(texto.indexOf("===") + texto.substring(texto.indexOf("===")).indexOf("\n") + 1,
+                    "Total encontrados: " + contador + "\n");
+        }
+
+        return texto.toString();
+    }
+
+    // ============================================================================
+    // MÉTODOS CRUD BÁSICOS PARA EMPLEADOS
+    // ============================================================================
+
+    public boolean agregarEmpleado(Empleado empleado) {
+        if (empleado == null) {
+            System.out.println("Error: No se puede agregar un empleado nulo");
+            return false;
+        }
+
+        if (existeEmpleadoId(empleado.getEmpleadoId())) {
+            System.out.println("Error: Ya existe un empleado con ID " + empleado.getEmpleadoId());
+            return false;
+        }
+
+        if (numEmpleados >= staff.length) {
+            ampliarCapacidadEmpleados();
+        }
+
+        staff[numEmpleados] = empleado;
+        numEmpleados++;
+        System.out.println("Empleado agregado exitosamente: " + empleado);
+        return true;
+    }
+
+    public boolean eliminarEmpleado(int indice) {
+        if (indice < 0 || indice >= numEmpleados) {
+            System.out.println("Error: Índice inválido para eliminar empleado (" + indice + ")");
+            return false;
+        }
+
+        // Desplazar elementos para eliminar el empleado
+        for (int i = indice; i < numEmpleados - 1; i++) {
+            staff[i] = staff[i + 1];
+        }
+        staff[numEmpleados - 1] = null;
+        numEmpleados--;
+        System.out.println("Empleado eliminado exitosamente");
+        return true;
+    }
+
+    public String consultarEmpleados() {
+        if (numEmpleados == 0) {
+            return "No hay empleados registrados en " + nombreBanco;
+        }
+
+        StringBuilder texto = new StringBuilder();
+        texto.append("=== LISTADO DE EMPLEADOS - ").append(nombreBanco.toUpperCase()).append(" ===\n");
+        texto.append("Total de empleados: ").append(numEmpleados).append("\n");
+        texto.append("-".repeat(60)).append("\n");
+
+        for (int i = 0; i < numEmpleados; i++) {
+            if (staff[i] != null) {
+                texto.append("[").append(String.format("%2d", i)).append("] ").append(staff[i]).append("\n");
+            }
+        }
+
+        return texto.toString();
+    }
+
+    // ============================================================================
+    // MÉTODOS ESTADÍSTICOS Y DE RESUMEN
+    // ============================================================================
+
+    public String obtenerEstadisticas() {
+        StringBuilder stats = new StringBuilder();
+        stats.append("=== ESTADÍSTICAS DEL BANCO ===\n");
+        stats.append("Nombre: ").append(nombreBanco).append("\n");
+        stats.append("Código: ").append(codigoBanco).append("\n");
+
+        if (!direccion.isEmpty()) {
+            stats.append("Dirección: ").append(direccion).append("\n");
+        }
+        if (!telefono.isEmpty()) {
+            stats.append("Teléfono: ").append(telefono).append("\n");
+        }
+
+        stats.append("-".repeat(30)).append("\n");
+        stats.append("Total de clientes: ").append(numClientes).append("/").append(clientes.length).append("\n");
+        stats.append("Total de empleados: ").append(numEmpleados).append("/").append(staff.length).append("\n");
+
+        // Estadísticas por género de clientes
+        int clientesMasculinos = 0, clientesFemeninos = 0;
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null) {
+                if (clientes[i].getGenero() == Genero.MASCULINO) {
+                    clientesMasculinos++;
+                } else if (clientes[i].getGenero() == Genero.FEMENINO) {
+                    clientesFemeninos++;
+                }
+            }
+        }
+
+        stats.append("Clientes masculinos: ").append(clientesMasculinos).append("\n");
+        stats.append("Clientes femeninos: ").append(clientesFemeninos).append("\n");
+
+        // Estadísticas de cuentas
+        int totalCuentas = 0;
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null) {
+                totalCuentas += clientes[i].getNumCuentas();
+            }
+        }
+        stats.append("Total de cuentas: ").append(totalCuentas).append("\n");
+
+        return stats.toString();
+    }
+
+    public boolean estaVacio() {
+        return numClientes == 0 && numEmpleados == 0;
+    }
+
+    public void limpiarClientes() {
+        for (int i = 0; i < numClientes; i++) {
+            clientes[i] = null;
+        }
+        numClientes = 0;
+        System.out.println("Todos los clientes han sido eliminados del banco");
+    }
+
+    public void limpiarEmpleados() {
+        for (int i = 0; i < numEmpleados; i++) {
+            staff[i] = null;
+        }
+        numEmpleados = 0;
+        System.out.println("Todos los empleados han sido eliminados del banco");
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Banco {");
-        sb.append("nombre='").append(nombre != null ? nombre : "No definido").append('\'');
-        sb.append(", id=").append(id);
-        sb.append(", numClientes=").append(numClientes);
-        sb.append(", numEmpleados=").append(numEmpleados);
-        sb.append('}');
+        sb.append("Banco [");
+        sb.append("Nombre = ").append(nombreBanco);
+        sb.append(", Código = ").append(codigoBanco);
+
+        if (!direccion.isEmpty()) {
+            sb.append(", Dirección = ").append(direccion);
+        }
+        if (!telefono.isEmpty()) {
+            sb.append(", Teléfono = ").append(telefono);
+        }
+
+        sb.append(", Clientes = ").append(numClientes);
+        sb.append(", Empleados = ").append(numEmpleados);
+        sb.append("]");
+
         return sb.toString();
     }
-
-    /**
-     * Métodos CRUD para Cliente
-     */
-
-    /**
-     *
-     * CRUD: Agregar cliente
-     */
-
-    /**
-     * Agrega un nuevo cliente al banco.
-     *
-     * @param id ID del cliente (no negativo)
-     * @param nombre Nombre del cliente (no vacío)
-     * @param apellido Apellido del cliente (no vacío)
-     * @param genero Género del cliente (no nulo)
-     * @param correo Correo válido
-     * @param fechaNacimiento Fecha de nacimiento válida y no futura
-     */
-    public void agregarCliente(int id, String nombre, String apellido, Genero genero, String correo, Fecha fechaNacimiento) {
-        if (id < 0) {
-            System.out.println("Error: El ID no puede ser negativo.");
-            return;
-        }
-        if (nombre == null || nombre.trim().isEmpty()) {
-            System.out.println("Error: El nombre no puede estar vacío.");
-            return;
-        }
-        if (apellido == null || apellido.trim().isEmpty()) {
-            System.out.println("Error: El apellido no puede estar vacío.");
-            return;
-        }
-        if (genero == null) {
-            System.out.println("Error: El género no puede ser nulo.");
-            return;
-        }
-        if (correo == null || !esCorreoValido(correo)) {
-            System.out.println("Error: El correo no es válido.");
-            return;
-        }
-        if (fechaNacimiento == null) {
-            System.out.println("Error: La fecha de nacimiento no puede ser nula.");
-            return;
-        }
-        if (esFechaFutura(fechaNacimiento)) {
-            System.out.println("Error: La fecha de nacimiento no puede ser futura.");
-            return;
-        }
-        Cliente cliente = new Cliente(id, nombre, apellido, genero, correo, fechaNacimiento);
-        if (verificarCliente(cliente)) {
-            System.out.println("Error: Cliente ya existe.");
-            return;
-        }
-        if (numClientes == clientes.length) {
-            Cliente[] aux = new Cliente[numClientes + 1];
-            System.arraycopy(clientes, 0, aux, 0, numClientes);
-            clientes = aux;
-        }
-        clientes[numClientes] = cliente;
-        numClientes++;
-        System.out.println("Cliente agregado exitosamente.");
-    }
-
-    /**
-     * CRUD: editar cliente
-     */
-
-    /**
-     * Editar los datos de un cliente existente.
-     * @param indice Índice del cliente a modificar
-     * @param id Nuevo ID del cliente
-     * @param nombre Nuevo nombre del cliente
-     * @param apellido Nuevo apellido del cliente
-     */
-
-    public void editarCliente(int indice, int id, String nombre, String apellido) {
-        if (indice >= 0 && indice < numClientes) {
-            Cliente cliente = clientes[indice];
-            cliente.setClienteId(id);
-            cliente.setNombre(nombre);
-            cliente.setApellido(apellido);
-        }
-    }
-    /**
-     * CRUD: eliminar cliente
-     */
-
-    /**
-     * Elimina un cliente del banco.
-     *
-     * @param indice Índice del cliente a eliminar
-     */
-    public void eliminarCliente(int indice) {
-        if (indice >= 0 && indice < numClientes) {
-            // Mover todos los clientes una posición a la izquierda a partir del índice
-            for (int i = indice; i < numClientes - 1; i++) {
-                clientes[i] = clientes[i + 1];
-            }
-            clientes[numClientes - 1] = null;
-            numClientes--;
-        }
-    }
-
-    /**
-     * CRUD: consultar cliente
-     */
-
-    /**
-     * Consulta los clientes actuales del banco.
-     *
-     * @return Información de los clientes en formato de texto
-     */
-
-    public String consultarClientes() {
-        StringBuilder texto = new StringBuilder();
-        for (Cliente cliente : clientes) {
-            if (cliente != null) {
-                texto.append(cliente.toString()).append("\n");
-            }
-        }
-        return texto.toString();
-    }
-    /**
-     * Verifica si un cliente ya existe en el banco.
-     *
-     * @param cliente Cliente a verificar
-     * @return true si el cliente ya está registrado, false en caso contrario
-     */
-    private boolean verificarCliente(Cliente cliente) {
-        for (int i = 0; i < numClientes; i++) {
-            if (clientes[i].getId() == cliente.getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
-     * Busca y retorna un cliente por índice.
-     *
-     * @param indice Índice del cliente
-     * @return Cliente encontrado o null si el índice no es válido
-     */
-    public Cliente buscarCliente(int indice) {
-        if (indice >= 0 && indice < numClientes) {
-            return clientes[indice];
-        }
-        System.out.println("Error: Índice de cliente no válido.");
-        return null;
-    }
-
-
-    /**
-     * Métodos CRUD para Empleados
-     */
-
-    /**
-     *
-     * CRUD: Agregar empleado
-     */
-
-    /**
-     * Agrega un nuevo empleado al banco, validando duplicados.
-     *
-     * @param id ID del empleado (no negativo)
-     * @param nombre Nombre del empleado (no vacío)
-     * @param apellido Apellido del empleado (no vacío)
-     * @param genero Género del empleado (no nulo)
-     * @param correo Correo válido
-     * @param fechaIngreso Fecha de ingreso válida y no futura
-     */
-    public void agregarEmpleado(int id, String nombre, String apellido, Genero genero, String correo, Fecha fechaIngreso) {
-        if (id < 0) {
-            System.out.println("Error: El ID no puede ser negativo.");
-            return;
-        }
-        if (nombre == null || nombre.trim().isEmpty()) {
-            System.out.println("Error: El nombre no puede estar vacío.");
-            return;
-        }
-        if (apellido == null || apellido.trim().isEmpty()) {
-            System.out.println("Error: El apellido no puede estar vacío.");
-            return;
-        }
-        if (genero == null) {
-            System.out.println("Error: El género no puede ser nulo.");
-            return;
-        }
-        if (correo == null || !esCorreoValido(correo)) {
-            System.out.println("Error: El correo no es válido.");
-            return;
-        }
-        if (fechaIngreso == null) {
-            System.out.println("Error: La fecha de ingreso no puede ser nula.");
-            return;
-        }
-        if (esFechaFutura(fechaIngreso)) {
-            System.out.println("Error: La fecha de ingreso no puede ser futura.");
-            return;
-        }
-        Empleado empleado = new Empleado(id, nombre, apellido, genero, correo, fechaIngreso);
-        if (verificarEmpleado(empleado)) {
-            System.out.println("Error: Empleado ya existe.");
-            return;
-        }
-        if (numEmpleados == empleados.length) {
-            Empleado[] aux = new Empleado[numEmpleados + 1];
-            System.arraycopy(empleados, 0, aux, 0, numEmpleados);
-            empleados = aux;
-        }
-        empleados[numEmpleados] = empleado;
-        numEmpleados++;
-        System.out.println("Empleado agregado exitosamente.");
-    }
-
-    /**
-     * Agrega un empleado existente al banco.
-     *
-     * Este método permite añadir directamente un objeto Empleado (o una subclase de Empleado)
-     * al arreglo de empleados del banco, realizando las validaciones necesarias:
-     * - No permite agregar empleados nulos.
-     * - Verifica que no exista un empleado con el mismo ID previamente agregado.
-     * - Si el arreglo está lleno, se redimensiona para acomodar un nuevo empleado.
-     *
-     * @param empleado El objeto Empleado a agregar.
-     */
-
-    public void agregarEmpleado(Empleado empleado) {
-        if (empleado == null) {
-            System.out.println("Error: empleado nulo");
-            return;
-        }
-        if (verificarEmpleado(empleado)) {
-            System.out.println("Error: Empleado ya existe.");
-            return;
-        }
-        if (numEmpleados == empleados.length) {
-            Empleado[] aux = new Empleado[numEmpleados + 1];
-            System.arraycopy(empleados, 0, aux, 0, numEmpleados);
-            empleados = aux;
-        }
-        empleados[numEmpleados] = empleado;
-        numEmpleados++;
-        System.out.println("El empleado se ha agregado exitosamente.");
-
-    }
-
-    /**
-     *
-     * CRUD: Editar empleado
-     */
-
-    /**
-     * Edita los datos de un empleado existente.
-     *
-     */
-    public boolean editarEmpleado(int indice, Empleado nuevoEmpleado) {
-        if (indice >= 0 && indice < numEmpleados) {
-            empleados[indice] = nuevoEmpleado;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     *
-     * CRUD: Eliminar empleado
-     */
-
-    /**
-     * Elimina un empleado del banco.
-     *
-     * @param indice Índice del empleado a eliminar
-     */
-    public void eliminarEmpleado(int indice) {
-        if (indice >= 0 && indice < numEmpleados) {
-            for (int i = indice; i < numEmpleados - 1; i++) {
-                empleados[i] = empleados[i + 1];
-            }
-            empleados[numEmpleados - 1] = null;
-            numEmpleados--;
-        } else {
-            System.out.println("Error: Índice inválido para eliminar empleado.");
-        }
-    }
-
-
-    /**
-     * CRUD: consultar cliente
-     */
-
-    /**
-     * Consulta todos los empleados del banco.
-     *
-     * @return Cadena con información de los empleados
-     */
-    public void consultarEmpleados() {
-        for (int i = 0; i < numEmpleados; i++) {
-            System.out.println(empleados[i].toString());
-        }
-    }
-    /**
-     * Verifica si un empleado ya existe en el banco.
-     *
-     * @param empleado Empleado a verificar
-     * @return true si ya existe, false si no
-     */
-    public boolean verificarEmpleado(Empleado empleado) {
-        if (empleado.getId() == 0) {
-            // No consideramos que ya exista porque el ID es el valor por defecto (sin asignar)
-            return false;
-        }
-        for (int i = 0; i < numEmpleados; i++) {
-            if (empleados[i].getId() == empleado.getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
-     * Busca y retorna un empleado por índice.
-     *
-     * @param indice Índice del empleado
-     * @return Empleado encontrado o null si el índice no es válido
-     */
-    public Empleado buscarEmpleado(int indice) {
-        if (indice >= 0 && indice < numEmpleados) {
-            return empleados[indice];
-        }
-        System.out.println("Error: Índice de empleado no válido.");
-        return null;
-    }
-    /**
-     * Valida si el correo tiene formato válido.
-     *
-     * @param correo Correo electrónico
-     * @return true si es válido, false si no
-     */
-    public static boolean esCorreoValido(String correo) {
-        if (correo == null) return false;
-        return correo.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
-    }
-
-    public boolean validarEmpleado(Empleado empleados){
-        boolean respuesta = false;
-        for (Empleado em: empleados){
-            if (em.equals(empleados)){
-                respuesta = true;
-                break;
-            }
-        }
-        return respuesta;
-    }
-
-    /**
-     * Verifica si la fecha es futura comparada con la fecha actual.
-     *
-     * @param fecha Fecha a validar
-     * @return true si es futura, false si no
-     */
-    public static boolean esFechaFutura(Fecha fecha) {
-        java.util.Calendar calFecha = java.util.Calendar.getInstance();
-        calFecha.set(fecha.getAnio(), fecha.getMes() - 1, fecha.getDia(), 0, 0, 0);
-        calFecha.set(java.util.Calendar.MILLISECOND, 0);
-
-        java.util.Calendar hoy = java.util.Calendar.getInstance();
-        hoy.set(java.util.Calendar.HOUR_OF_DAY, 0);
-        hoy.set(java.util.Calendar.MINUTE, 0);
-        hoy.set(java.util.Calendar.SECOND, 0);
-        hoy.set(java.util.Calendar.MILLISECOND, 0);
-
-        return calFecha.after(hoy);
-    }
-
 }
-
-
-
-
-
-
-

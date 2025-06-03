@@ -2,142 +2,161 @@ package ec.edu.uce.dominio;
 
 import java.util.Objects;
 
-import static ec.edu.uce.dominio.Banco.esCorreoValido;
-
-/**
- * Clase que representa un empleado del banco.
- * Contiene atributos y métodos para gestionar la información de un empleado.
- * Esta clase está diseñada para integrarse con la clase Banco.
- *
- * @author Edwin Caiza
- */
-public class Empleado {
-    private int id;
+public class Empleado implements Comparable<Empleado> {
+    // ATRIBUTOS
+    private int empleadoId;
     private String nombre;
     private String apellido;
-    private Genero genero;
     private String correo;
-    private Fecha fechaIngreso;
+    private String direccion;
+    private String telefono;
+    private Fecha fechaNacimiento;
+    private Genero genero;
     private double salario;
     private String puesto;
-    public static final double SALARIO_BASICO = 500.0;
-    Fecha fecha = new Fecha(9,3, 2006);
+    private Fecha fechaContratacion;
 
-    /**
-     * Constructor parametrizado para crear un empleado completo.
-     *
-     * @param id           Identificador del empleado (no negativo)
-     * @param nombre       Nombre del empleado (no vacío)
-     * @param apellido     Apellido del empleado (no vacío)
-     * @param genero       Género del empleado (no nulo)
-     * @param correo       Correo válido
-     * @param fechaIngreso Fecha de ingreso (no futura)
-     */
-    public Empleado(int id, String nombre, String apellido, Genero genero, String correo, Fecha fechaIngreso) {
-        setId(id);
+    public Empleado() {
+        this.empleadoId = 1;
+        this.nombre = "sin nombre";
+        this.apellido = "sin apellido";
+        this.genero = Genero.FEMENINO; // Valor por defecto
+        this.salario = 0.0;
+        this.puesto = "Sin asignar";
+        this.fechaContratacion = new Fecha();
+    }
+
+    public Empleado(Empleado otroEmpleado) {
+        this.empleadoId = otroEmpleado.empleadoId;
+        this.nombre = otroEmpleado.nombre;
+        this.apellido = otroEmpleado.apellido;
+        this.correo = otroEmpleado.correo;
+        this.direccion = otroEmpleado.direccion;
+        this.telefono = otroEmpleado.telefono;
+        this.fechaNacimiento = otroEmpleado.fechaNacimiento != null ?
+                new Fecha(otroEmpleado.fechaNacimiento) : null;
+        this.genero = otroEmpleado.genero;
+        this.salario = otroEmpleado.salario;
+        this.puesto = otroEmpleado.puesto;
+        this.fechaContratacion = otroEmpleado.fechaContratacion != null ?
+                new Fecha(otroEmpleado.fechaContratacion) : null;
+    }
+
+    public Empleado(int id, String nombre, String apellido, Genero genero, double salario) {
+        setEmpleadoId(id);
         setNombre(nombre);
         setApellido(apellido);
         setGenero(genero);
-        setCorreo(correo);
-        setFechaIngreso(fechaIngreso);
-        this.salario = 0.0;  // salario inicial 0.0
-        this.puesto = "No definido"; // puesto inicial
+        setSalario(salario);
     }
 
-    /**
-     * Constructor para editar empleado sin cambiar fecha ingreso y género,
-     * pero actualizando nombre, apellido, salario y puesto.
-     *
-     * @param id       Identificador (para conservar el id original)
-     * @param nombre   Nuevo nombre
-     * @param apellido Nuevo apellido
-     * @param salario  Nuevo salario
-     * @param puesto   Nuevo puesto
-     */
-    public Empleado(int id, String nombre, String apellido, double salario, String puesto) {
-        setId(id);
+    public Empleado(int empleadoId, String nombre, String apellido, String correo,
+                    String direccion, String telefono, Fecha fechaNacimiento, Genero genero,
+                    double salario, String puesto, Fecha fechaContratacion) {
+        setEmpleadoId(empleadoId);
         setNombre(nombre);
         setApellido(apellido);
-        this.salario = salario;
-        this.puesto = puesto;
-        this.genero = null;
-        this.correo = null;
-        this.fechaIngreso = null;
+        setCorreo(correo);
+        setDireccion(direccion);
+        setTelefono(telefono);
+        setFechaNacimiento(fechaNacimiento);
+        setGenero(genero);
+        setSalario(salario);
+        setPuesto(puesto);
+        setFechaContratacion(fechaContratacion);
     }
 
-    /**
-     * Constructor por defecto.
-     * Inicializa valores básicos para evitar errores al extender la clase.
-     */
-    public Empleado() {
-        this(1, "Sin nombre", "Sin apellido", Genero.MASCULINO, "example@org.edu", fecha);
+    // MÉTODOS GET Y SET
+
+    public int getEmpleadoId() {
+        return empleadoId;
     }
 
-    // Getters y setters con validaciones
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        if (id < 0)
-            throw new IllegalArgumentException("El ID no puede ser negativo.");
-        this.id = id;
+    public void setEmpleadoId(int empleadoId) {
+        if (empleadoId >= 0) {
+            this.empleadoId = empleadoId;
+        } else {
+            System.out.println("Error: codigo invalido " + empleadoId);
+        }
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty())
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        if (apellido == null || apellido.trim().isEmpty())
-            throw new IllegalArgumentException("El apellido no puede estar vacío.");
-        this.apellido = apellido;
-    }
-
-    public Genero getGenero() {
-        return genero;
-    }
-
-    public void setGenero(Genero genero) {
-        if (genero == null)
-            throw new IllegalArgumentException("El género no puede ser nulo.");
-        this.genero = genero;
+    public void setNombre(String nuevoNombre) {
+        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+            this.nombre = nuevoNombre;
+        } else {
+            System.out.println("Error: nombre invalido");
+            this.nombre = "sin nombre";
+        }
     }
 
     public String getCorreo() {
         return correo;
     }
 
-    public void setCorreo(String correo) {
-        if (!esCorreoValido(correo)) {
-            System.out.println("Error: El correo no es válido.");
+    public void setCorreo(String nuevoCorreo) {
+        if (nuevoCorreo != null && nuevoCorreo.contains("@") && nuevoCorreo.contains(".")) {
+            this.correo = nuevoCorreo;
         } else {
-            this.correo = correo;
+            System.out.println("Error: formato de correo invalido");
         }
     }
 
-
-    public Fecha getFechaIngreso() {
-        return fechaIngreso;
+    public String getApellido() {
+        return apellido;
     }
 
-    public void setFechaIngreso(Fecha fechaIngreso) {
-        if (fechaIngreso == null)
-            throw new IllegalArgumentException("La fecha de ingreso no puede ser nula.");
-        if (Banco.esFechaFutura(fechaIngreso))
-            throw new IllegalArgumentException("La fecha de ingreso no puede ser futura.");
-        this.fechaIngreso = fechaIngreso;
+    public void setApellido(String nuevoApellido) {
+        if (nuevoApellido != null && !nuevoApellido.trim().isEmpty()) {
+            this.apellido = nuevoApellido;
+        } else {
+            System.out.println("Error: apellido invalido");
+            this.apellido = "sin apellido";
+        }
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String nuevaDireccion) {
+        this.direccion = nuevaDireccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String nuevoTelefono) {
+        if (nuevoTelefono != null && nuevoTelefono.matches("\\d{10}")) {
+            this.telefono = nuevoTelefono;
+        } else {
+            System.out.println("Error: formato de telefono invalido (debe tener 10 digitos)");
+        }
+    }
+
+    public Fecha getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Fecha fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public Genero getGenero() {
+        return genero;
+    }
+
+
+    public void setGenero(Genero genero) {
+        if (genero != null) {
+            this.genero = genero;
+        } else {
+            System.out.println("Error: genero invalido");
+        }
     }
 
     public double getSalario() {
@@ -145,9 +164,12 @@ public class Empleado {
     }
 
     public void setSalario(double salario) {
-        if (salario < 0)
-            throw new IllegalArgumentException("El salario no puede ser negativo.");
-        this.salario = salario;
+        if (salario >= 0) {
+            this.salario = salario;
+        } else {
+            System.out.println("Error: el salario no puede ser negativo");
+            this.salario = 0.0;
+        }
     }
 
     public String getPuesto() {
@@ -155,40 +177,185 @@ public class Empleado {
     }
 
     public void setPuesto(String puesto) {
-        if (puesto == null || puesto.trim().isEmpty())
-            throw new IllegalArgumentException("El puesto no puede estar vacío.");
-        this.puesto = puesto;
+        if (puesto != null && !puesto.trim().isEmpty()) {
+            this.puesto = puesto;
+        } else {
+            System.out.println("Error: puesto invalido");
+            this.puesto = "Sin asignar";
+        }
     }
 
-    @Override
-    public String toString() {
-        return "Empleado [id=" + id +
-                ", nombre=" + nombre +
-                ", apellido=" + apellido +
-                ", genero=" + (genero != null ? genero : "No definido") +
-                ", correo=" + (correo != null ? correo : "No definido") +
-                ", fechaIngreso=" + (fechaIngreso != null ? fechaIngreso : "No definido") +
-                ", salario=" + salario +
-                ", puesto=" + puesto +
-                "]";
+    public Fecha getFechaContratacion() {
+        return fechaContratacion;
     }
 
+    public void setFechaContratacion(Fecha fechaContratacion) {
+        if (fechaContratacion != null) {
+            this.fechaContratacion = new Fecha(fechaContratacion);
+        } else {
+            this.fechaContratacion = new Fecha();
+        }
+    }
 
-    // Clase 26/05/2025
+    // MÉTODOS ADICIONALES
+    public double calcularBonoAnual() {
+        return salario * 0.30;
+    }
+
+    public void incrementarSalario(double monto) {
+        if (monto > 0) {
+            this.salario += monto;
+        } else {
+            System.out.println("Error: el monto a incrementar debe ser positivo");
+        }
+    }
+
+    public int calcularEdad() {
+        if (fechaNacimiento == null) {
+            return 0;
+        }
+
+        Fecha fechaActual = new Fecha(); // Asume fecha actual
+        int edad = fechaActual.getAnio() - fechaNacimiento.getAnio();
+
+        // Ajustar si aún no ha cumplido años este año
+        if (fechaActual.getMes() < fechaNacimiento.getMes() ||
+                (fechaActual.getMes() == fechaNacimiento.getMes() &&
+                        fechaActual.getDia() < fechaNacimiento.getDia())) {
+            edad--;
+        }
+
+        return edad;
+    }
+
+    public int calcularAniosExperiencia() {
+        if (fechaContratacion == null) {
+            return 0;
+        }
+
+        Fecha fechaActual = new Fecha(); // Asume fecha actual
+        int anios = fechaActual.getAnio() - fechaContratacion.getAnio();
+
+        // Ajustar si aún no ha cumplido el aniversario este año
+        if (fechaActual.getMes() < fechaContratacion.getMes() ||
+                (fechaActual.getMes() == fechaContratacion.getMes() &&
+                        fechaActual.getDia() < fechaContratacion.getDia())) {
+            anios--;
+        }
+
+        return anios;
+    }
+
+    public String getNombreCompleto() {
+        return nombre + " " + apellido;
+    }
+
+    public boolean esElegibleBonoAntiguedad() {
+        return calcularAniosExperiencia() >= 5;
+    }
+
+    public double calcularSalarioMensual() {
+        return salario / 12.0;
+    }
+
+    // MÉTODOS OVERRIDE
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Empleado empleado = (Empleado) o;
-        return nombre.equals(empleado.nombre) &&
-                apellido.equals(empleado.apellido);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Empleado empleado = (Empleado) obj;
+        return empleadoId == empleado.empleadoId &&
+                Double.compare(empleado.salario, salario) == 0 &&
+                Objects.equals(nombre, empleado.nombre) &&
+                Objects.equals(apellido, empleado.apellido) &&
+                Objects.equals(correo, empleado.correo) &&
+                Objects.equals(direccion, empleado.direccion) &&
+                Objects.equals(telefono, empleado.telefono) &&
+                Objects.equals(fechaNacimiento, empleado.fechaNacimiento) &&
+                genero == empleado.genero &&
+                Objects.equals(puesto, empleado.puesto) &&
+                Objects.equals(fechaContratacion, empleado.fechaContratacion);
     }
 
     @Override
     public int hashCode() {
-        int hash = 9;
-        hash = 3 * hash + Objects.hashCode(this.getNombre());
-        hash = 3 *  hash + Objects.hashCode(this.getApellido());
-        return hash;
+        return Objects.hash(empleadoId, nombre, apellido, correo, direccion,
+                telefono, fechaNacimiento, genero, salario, puesto,
+                fechaContratacion);
     }
+
+    @Override
+    public int compareTo(Empleado otroEmpleado) {
+        // Comparar por salario primero
+        int comparacionSalario = Double.compare(this.salario, otroEmpleado.salario);
+        if (comparacionSalario != 0) {
+            return comparacionSalario;
+        }
+
+        // Si tienen el mismo salario, comparar por apellido
+        int comparacionApellido = this.apellido.compareTo(otroEmpleado.apellido);
+        if (comparacionApellido != 0) {
+            return comparacionApellido;
+        }
+
+        // Si tienen el mismo apellido, comparar por nombre
+        return this.nombre.compareTo(otroEmpleado.nombre);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Empleado [ID = ").append(empleadoId)
+                .append(", Nombre = ").append(nombre)
+                .append(", Apellido = ").append(apellido);
+
+        if (genero != null) {
+            sb.append(", Género = ").append(genero);
+        }
+
+        if (correo != null && !correo.isEmpty()) {
+            sb.append(", Correo = ").append(correo);
+        }
+
+        if (direccion != null && !direccion.isEmpty()) {
+            sb.append(", Dirección = ").append(direccion);
+        }
+
+        if (telefono != null && !telefono.isEmpty()) {
+            sb.append(", Teléfono = ").append(telefono);
+        }
+
+        if (fechaNacimiento != null) {
+            sb.append(", Fecha Nacimiento = ").append(fechaNacimiento);
+            sb.append(", Edad = ").append(calcularEdad()).append(" años");
+        }
+
+        sb.append(", Puesto = ").append(puesto)
+                .append(", Salario = $").append(String.format("%.2f", salario))
+                .append(", Salario Mensual = $").append(String.format("%.2f", calcularSalarioMensual()));
+
+        if (fechaContratacion != null) {
+            sb.append(", Fecha Contratación = ").append(fechaContratacion);
+            sb.append(", Años de Experiencia = ").append(calcularAniosExperiencia());
+        }
+
+        sb.append(", Bono Anual = $").append(String.format("%.2f", calcularBonoAnual()));
+        sb.append(", Elegible Bono Antigüedad = ").append(esElegibleBonoAntiguedad() ? "Sí" : "No");
+        sb.append("]");
+
+        return sb.toString();
+    }
+
+    @Override
+    public Empleado clone() {
+        try {
+            return new Empleado(this);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al clonar empleado", e);
+        }
+    }
+
+
 }
