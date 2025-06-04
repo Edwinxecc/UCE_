@@ -247,6 +247,9 @@ public class Banco {
 
         return texto.toString();
     }
+    public static Cliente getClientes(){
+        return clientes;
+    }
 
     public boolean editarCliente(int p, Cliente c) {
         // Validar posición
@@ -544,6 +547,10 @@ public class Banco {
         }
         numEmpleados = 0;
         System.out.println("Todos los empleados han sido eliminados del banco");
+    }
+
+    public Cliente[] getClientes() {
+        return clientes;
     }
 
     @Override
