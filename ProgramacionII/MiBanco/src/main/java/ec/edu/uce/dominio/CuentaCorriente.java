@@ -1,5 +1,7 @@
 package ec.edu.uce.dominio;
 
+import java.util.Map;
+
 public class CuentaCorriente extends Cuenta {
     private double sobregiro;
 
@@ -74,5 +76,13 @@ public class CuentaCorriente extends Cuenta {
     public String toString() {
         return "Cuenta Corriente: [saldo actual: " + String.format("%.2f", getBalance()) +
                 "] [sobregiro: " + String.format("%.2f", sobregiro) + "]";
+    }
+
+    public double calculoInteres(){
+        return balance *
+    }
+
+    public String toString(){
+        return super()
     }
 }

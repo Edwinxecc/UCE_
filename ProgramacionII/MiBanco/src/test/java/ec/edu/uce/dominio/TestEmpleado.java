@@ -8,5 +8,8 @@ public class TestEmpleado {
         // test de auto numerado
         Empleado emp2 = new Empleado();
         System.out.println(emp2);
+
+        Empleado emp3 = new Empleado();
+        System.out.println(emp3);
     }
 }

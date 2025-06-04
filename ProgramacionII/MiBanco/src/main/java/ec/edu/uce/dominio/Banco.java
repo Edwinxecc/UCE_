@@ -63,6 +63,18 @@ public class Banco {
         this.numEmpleados = 0;
     }
 
+    private static final Banco instance = new Banco();
+
+    public Banco(){
+        clientes = new Cliente[3];
+        numClientes = 0;
+        staff = new Empleado[2];
+        numEmpleados = 0;
+    }
+
+    public static Banco getInstance(){
+        return instance;
+    }
 
     public Banco(String nombreBanco, String codigoBanco, int capacidadInicial) {
         this(capacidadInicial);

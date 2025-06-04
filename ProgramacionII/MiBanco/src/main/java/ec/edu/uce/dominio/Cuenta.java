@@ -2,7 +2,7 @@ package ec.edu.uce.dominio;
 
 public abstract class Cuenta {
 
-    private double balance;
+    protected double balance;
 
     private static int contadorCuentas = 1000;
 

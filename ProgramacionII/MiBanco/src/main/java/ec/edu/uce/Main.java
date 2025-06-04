@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Creación del banco
-        Banco banco = new Banco();
+        Banco banco = Banco.getInstance();
         System.out.println("Banco creado: " + banco);
 
         // Ejemplo de asignación de género basado en un valor de entrada
