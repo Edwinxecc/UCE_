@@ -29,12 +29,12 @@ public class Banco {
     private static final int CAPACIDAD_INICIAL_DEFAULT = 5;
 
     private static final int INCREMENTO_CAPACIDAD = 3;
-    public  static final double SALARIO_BASICO = 470.00;
+    public static final double SALARIO_BASICO = 470.00;
     public static int contador;
 
     //bloque de inicializacion
     static {
-        contador = 0;
+        contador = 1;
     }
 
     // CONSTRUCTORES

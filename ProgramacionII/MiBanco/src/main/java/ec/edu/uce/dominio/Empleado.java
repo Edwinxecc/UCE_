@@ -17,13 +17,16 @@ public class Empleado implements Comparable<Empleado> {
     private Fecha fechaContratacion;
 
     public Empleado() {
-        this.empleadoId = 1;
+        /*this.empleadoId = 1;
         this.nombre = "sin nombre";
         this.apellido = "sin apellido";
         this.genero = Genero.FEMENINO; // Valor por defecto
         this.salario = 0.0;
         this.puesto = "Sin asignar";
         this.fechaContratacion = new Fecha();
+
+         */
+        this(Banco.contador++, "Sin nombre", "Sin apellido", Genero.MASCULINO, Banco.SALARIO_BASICO);
     }
 
     public Empleado(Empleado otroEmpleado) {
