@@ -1,76 +1,141 @@
+/**
+ * @author Edwin Caiza
+ */
 package ec.edu.uce.dominio;
 
 public class TarjetaCredito extends Cuenta {
-
-    private double cupo; // Cupo o límite de crédito disponible
+    private double cupo;        // Crédito disponible
+    private double cupoMaximo;  // Límite máximo de crédito
 
     public TarjetaCredito() {
         super();
-        this.cupo = 1000.0; // Cupo por defecto
+        this.cupoMaximo = 1000; // ejemplo límite máximo de crédito
+        this.cupo = cupoMaximo; // inicialmente todo el cupo está disponible
     }
 
-    public TarjetaCredito(double balance) {
-        super(balance);
-        this.cupo = 1000.0; // Cupo por defecto
+    public TarjetaCredito(double saldo, double cupoMaximo) {
+        super(saldo);
+        this.cupoMaximo = cupoMaximo;
+        this.cupo = cupoMaximo;
     }
 
-    public TarjetaCredito(double balance, double cupo) {
-        super(balance);
-        this.cupo = cupo > 0 ? cupo : 1000.0;
-    }
-
-    // Getter y Setter para cupo
     public double getCupo() {
         return cupo;
     }
 
     public void setCupo(double cupo) {
-        if (cupo > 0) {
+
+        if (cupo < 0) {
+            this.cupo = 0;
+        } else if (cupo > cupoMaximo) {
+            this.cupo = cupoMaximo;
+        } else {
             this.cupo = cupo;
-        } else {
-            System.out.println("Error: El cupo debe ser mayor a cero");
+        }
+    }
+
+    public double getCupoMaximo() {
+        return cupoMaximo;
+    }
+
+    public void setCupoMaximo(double cupoMaximo) {
+        this.cupoMaximo = cupoMaximo;
+
+        if (this.cupo > cupoMaximo) {
+            this.cupo = cupoMaximo;
         }
     }
 
     @Override
-    public boolean deposito(double monto) {
-        if (monto > 1) { // Siguiendo el patrón de las otras clases
-            setBalance(getBalance() + monto);
-            System.out.println("Depósito exitoso en Tarjeta de Crédito. Monto: $" + monto);
-            return true;
-        } else {
-            System.out.println("Error: No puede depositar valores menores o iguales a 1 en Tarjeta de Crédito");
-            return false;
-        }
-    }
-
-    @Override
-    public boolean retiro(double monto) {
+    public void deposito(double monto) {
         if (monto > 0) {
-            double disponible = getBalance() + cupo;
-            if (disponible >= monto) {
-                setBalance(getBalance() - monto);
-                System.out.println("Retiro exitoso de Tarjeta de Crédito. Monto: $" + monto);
-                return true;
+
+            double deuda;
+            if ((cupoMaximo - cupo) > 0) {
+                deuda = cupoMaximo - cupo;
             } else {
-                System.out.println("Error: Fondos insuficientes en Tarjeta de Crédito. Disponible: $" + disponible);
-                return false;
+                deuda = 0;
             }
-        } else {
-            System.out.println("Error: El monto a retirar debe ser mayor a cero");
-            return false;
+
+            double pago;
+            if (monto < deuda) {
+                pago = monto;
+            } else {
+                pago = deuda;
+            }
+
+            double nuevoCupo = cupo + pago;
+            setCupo(nuevoCupo);
+
+            double restante = monto - pago;
+            if (restante > 0) {
+                double nuevoSaldo = getSaldo() + restante;
+                setSaldo(nuevoSaldo);
+            }
         }
     }
 
-    public double calculoInteres() {
-        // Las tarjetas de crédito no generan intereses en este caso
-        return 0.0;
+    @Override
+    public void retiro(double monto) {
+        if (monto > 0) {
+
+            double disponible = getSaldo() + cupo;
+
+            if (monto <= disponible) {
+                if (monto <= getSaldo()) {
+
+                    double nuevoSaldo = getSaldo() - monto;
+                    setSaldo(nuevoSaldo);
+                } else {
+
+                    double restante = monto - getSaldo();
+                    setSaldo(0);
+
+                    double nuevoCupo = cupo - restante;
+                    setCupo(nuevoCupo);
+                }
+            } else {
+                System.out.println("Límite de crédito superado");
+            }
+        }
     }
 
-    // Método toString usando sobreescritura
+    @Override
+    public double calculoInteres() {
+
+        double creditoUsado = cupoMaximo - cupo;
+        if (creditoUsado <= 0) {
+            return 0;
+        }
+
+        double interes = creditoUsado * 0.05;
+
+        double nuevoCupo = cupo - interes;
+        setCupo(nuevoCupo);
+
+        return interes;
+    }
+
     @Override
     public String toString() {
-        return "TarjetaCredito: [saldo actual: " + String.format("%.2f", getBalance()) +
-                "] [cupo: " + String.format("%.2f", cupo) + "]";
+        return String.format("TarjetaCredito: [saldo actual : %.2f] [cupo: %.2f]", getSaldo(), cupo);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof TarjetaCredito)) return false;
+
+        TarjetaCredito otra = (TarjetaCredito) obj;
+
+        if (getSaldo() != otra.getSaldo()) return false;
+        if (cupo != otra.cupo) return false;
+        if (cupoMaximo != otra.cupoMaximo) return false;
+        return true;
+    }
+
+    @Override
+    public String descripcion() {
+        return "Cuenta de Ahorro";
     }
 }

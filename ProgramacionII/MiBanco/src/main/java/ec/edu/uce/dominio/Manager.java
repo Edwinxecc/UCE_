@@ -1,48 +1,92 @@
+/**
+ * @author Edwin Caiza
+ */
 package ec.edu.uce.dominio;
 
+import java.util.Date;
+
+/**
+ * Representa a un Manager, que es un tipo especializado de Empleado
+ * con asignación a un departamento específico dentro de la organización.
+ */
 public class Manager extends Empleado {
-    protected String deptNombre;
 
+    private String departamento;
+
+    public double getBono() {
+        return bono;
+    }
+
+    public void setBono(double bono) {
+        this.bono = bono;
+    }
+
+    private double bono;
+    /**
+     * Constructor por defecto.
+     * Inicializa el departamento como "Sin asignar".
+     */
     public Manager() {
+        super();  // Llama al constructor por defecto de Empleado
+        this.setSalario(2000);
+        this.departamento = "Sin asignar";
+    }
+
+    /**
+     * Constructor para crear un Manager con todos los atributos.
+     *
+     * @param id                Identificador único del empleado
+     * @param nombre            Nombre del empleado
+     * @param apellido          Apellido del empleado
+     * @param correo            Correo electrónico del empleado
+     * @param direccion         Dirección de residencia
+     * @param telefono          Número de teléfono
+     * @param salario           Salario mensual
+     * @param puesto            Puesto o cargo del empleado
+     * @param fechaContratacion Fecha de contratación
+     * @param departamento      Departamento asignado
+     */
+    public Manager(int id, String nombre, String apellido, String correo,
+                   String direccion, String telefono, double salario,
+                   String puesto, Date fechaContratacion, String departamento) {
+        super(id, nombre, apellido, correo, direccion, telefono, salario, puesto, fechaContratacion);
+        this.departamento = departamento;
+    }
+
+    public Manager(String nombre, String apellido) {
         super();
-        this.deptNombre = "sin departamento";
+        this.departamento = departamento;
+        this.setNombre(nombre);
+        this.setApellido(apellido);
+        this.bono=500.00;
     }
 
-    public Manager(int id, String nombre, String apellido, Genero genero,double salario, String departamento ) {
-        super(id, nombre, apellido, genero, salario);
-        //setDeptNombre(departamento);
-        this.deptNombre = departamento;
-
+    /**
+     * Obtiene el nombre del departamento asignado al Manager.
+     *
+     * @return nombre del departamento
+     */
+    public String getDepartamento() {
+        return departamento;
     }
 
-    public Manager(int empleadoId, String nombre, String apellido, String correo,
-                   String direccion, String telefono, Fecha fechaNacimiento, Genero genero,
-                   double salario, String puesto, Fecha fechaContratacion, String departamento) {
-        super(empleadoId, nombre, apellido, correo, direccion, telefono, fechaNacimiento, genero, salario, puesto, fechaContratacion);
-        setDeptNombre(departamento);
+    /**
+     * Establece el nombre del departamento para el Manager.
+     *
+     * @param departamento nombre del departamento
+     */
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
     }
 
-    public String getDeptNombre() {
-        return deptNombre;
-    }
-
-    public void setDeptNombre(String deptNombre) {
-        if (deptNombre != null && !deptNombre.trim().isEmpty()) {
-            this.deptNombre = deptNombre;
-        } else {
-            this.deptNombre = "sin departamento";
-        }
-    }
-
-    @Override
-    public double calcularBonoAnual() {
-        return getSalario() * 0.40;
-    }
-
+    /**
+     * Devuelve una representación en texto del Manager,
+     * incluyendo la información heredada del empleado y su departamento.
+     *
+     * @return cadena con los datos del manager
+     */
     @Override
     public String toString() {
-        return super.toString().replace("]", "") +
-                ", Departamento = " + deptNombre +
-                ", Bono Manager = $" + String.format("%.2f", calcularBonoAnual()) + "]";
+        return "Manager: "+ super.toString() + ", Departamento= " + departamento+"\r\nCantidad del bono: "+bono;
     }
 }

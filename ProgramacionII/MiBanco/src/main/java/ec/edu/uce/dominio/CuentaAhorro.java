@@ -1,77 +1,98 @@
+/**
+ * @author Edwin Caiza
+ */
 package ec.edu.uce.dominio;
 
+/**
+ * Representa una cuenta de ahorro con una tasa de interés fija del 5%.
+ */
 public class CuentaAhorro extends Cuenta {
 
-    private static final double TASA_INTERES = 0.05; // 5% anual
-    private double montoInteres;
+    /**
+     * Tasa de interés fija para todas las cuentas de ahorro (5%).
+     */
+    private static final double TASA_INTERES = 0.05;
 
-    // Constructor por defecto usando super()
+    /**
+     * Constructor por defecto. Crea una cuenta con saldo 0.
+     */
     public CuentaAhorro() {
         super();
-        this.montoInteres = 0.0;
     }
 
-    // Constructor con balance inicial usando super()
-    public CuentaAhorro(double balance) {
-        super(balance);
-        this.montoInteres = 0.0;
+    /**
+     * Constructor con saldo inicial.
+     * @param saldo Saldo inicial de la cuenta
+     */
+    public CuentaAhorro(double saldo) {
+        super(saldo);
     }
 
-    // Constructor con balance y montoInteres usando super()
-    public CuentaAhorro(double balance, double montoInteres) {
-        super(balance);
-        this.montoInteres = montoInteres;
+    /**
+     * Obtiene la tasa de interés.
+     * @return Tasa de interés fija (5%)
+     */
+    public double getInteres() {
+        return TASA_INTERES;
     }
 
-    // Getter para monto de intereses
-    public double getMontoInteres() {
-        return montoInteres;
-    }
-
-    // Implementación del método deposito
+    /**
+     * Realiza un depósito si el monto es mayor o igual a 1.
+     * @param monto Monto a depositar
+     */
     @Override
-    public boolean deposito(double monto) {
-        if (monto >= 1) { // No puede depositar valores menores a 1
-            setBalance(getBalance() + monto);
-            System.out.println("Depósito exitoso en Cuenta de Ahorro. Monto: $" + String.format("%.2f", monto));
-            return true;
-        } else {
-            System.out.println("Error: No puede depositar valores menores a 1 en Cuenta de Ahorro");
-            return false;
+    public void deposito(double monto) {
+        if (monto >= 1) {
+            setSaldo(getSaldo() + monto);
         }
     }
 
-    // Implementación del método retiro
+    /**
+     * Realiza un retiro si hay saldo suficiente.
+     * @param monto Monto a retirar
+     */
     @Override
-    public boolean retiro(double monto) {
-        if (monto > 0) {
-            if (getBalance() >= monto) { // No puede retirar fondos superiores al balance
-                setBalance(getBalance() - monto);
-                System.out.println("Retiro exitoso de Cuenta de Ahorro. Monto: $" + String.format("%.2f", monto));
-                return true;
-            } else {
-                System.out.println("Error: No puede retirar fondos superiores al balance en Cuenta de Ahorro. Balance: $" + String.format("%.2f", getBalance()));
-                return false;
-            }
-        } else {
-            System.out.println("Error: El monto a retirar debe ser mayor a cero");
-            return false;
+    public void retiro(double monto) {
+        if (monto > 0 && monto <= getSaldo()) {
+            setSaldo(getSaldo() - monto);
         }
     }
 
-    // Implementación del cálculo de intereses - acumula montoInteres
+    /**
+     * Calcula y aplica el interés al saldo actual.
+     * @return Monto del interés generado
+     */
+    @Override
     public double calculoInteres() {
-        double interesCalculado = getBalance() * TASA_INTERES;
-        this.montoInteres += interesCalculado; // Acumula el montoInteres
-        System.out.println("Interés calculado: $" + String.format("%.2f", interesCalculado) +
-                ". Total acumulado: $" + String.format("%.2f", this.montoInteres));
-        return interesCalculado;
+        double interesGenerado = getSaldo() * TASA_INTERES;
+        setSaldo(getSaldo() + interesGenerado);
+        return interesGenerado;
     }
 
-    // Método toString usando sobreescritura
+    /**
+     * Representación en cadena de la cuenta de ahorro, incluyendo el saldo base
+     * y el interés calculado dinámicamente.
+     * @return Cadena con información detallada
+     */
     @Override
     public String toString() {
-        return "Cuenta de Ahorro: [saldo actual: " + String.format("%.2f", getBalance()) +
-                "] [interes: " + String.format("%.2f", montoInteres) + "]";
+        return super.toString() + " interés generado: " + String.format("%.2f", calculoInteres());
+    }
+
+    /**
+     * Compara si dos cuentas de ahorro tienen el mismo saldo.
+     * @param obj Objeto a comparar
+     * @return true si son del mismo tipo y saldo
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CuentaAhorro)) return false;
+        CuentaAhorro otra = (CuentaAhorro) obj;
+        return this.getSaldo() == otra.getSaldo();
+    }
+
+    @Override
+    public String descripcion() {
+        return "Cuenta Corriente";
     }
 }

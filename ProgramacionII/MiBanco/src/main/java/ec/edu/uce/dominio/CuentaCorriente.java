@@ -1,88 +1,103 @@
+/**
+ * @author Edwin Caiza
+ */
 package ec.edu.uce.dominio;
-
-import java.util.Map;
-
+/**
+ * Representa una cuenta corriente bancaria que permite sobregiro,
+ * pero dicho sobregiro es fijo y no puede modificarse después de la creación.
+ */
 public class CuentaCorriente extends Cuenta {
-    private double sobregiro;
+    private final double sobregiro;
 
-    // Constructor por defecto usando super()
+    /**
+     * Constructor por defecto: saldo 0, sobregiro 0.
+     */
     public CuentaCorriente() {
         super();
-        this.sobregiro = 0.0;
+        this.sobregiro = 0;
     }
 
-    // Constructor con balance inicial usando super()
-    public CuentaCorriente(double balance) {
-        super(balance);
-        this.sobregiro = 0.0;
+    /**
+     * Constructor con saldo inicial y sobregiro.
+     * @param saldo Saldo inicial
+     * @param sobregiro Límite de sobregiro permitido
+     */
+    public CuentaCorriente(double saldo, double sobregiro) {
+        super(saldo);
+        this.sobregiro = Math.max(0, sobregiro);
     }
 
-    // Constructor con balance y sobregiro usando super()
-    public CuentaCorriente(double balance, double sobregiro) {
-        super(balance);
-        this.sobregiro = sobregiro;
+    /**
+     * Constructor con solo sobregiro. El saldo es 0.
+     * @param sobregiro Límite de sobregiro
+     */
+    public CuentaCorriente(double sobregiro) {
+        this(0, sobregiro);
     }
 
-    // Getter para sobregiro
     public double getSobregiro() {
         return sobregiro;
     }
 
-    // Setter para sobregiro
-    public void setSobregiro(double sobregiro) {
-        this.sobregiro = sobregiro;
-    }
-
-    // Implementación del método deposito
+    /**
+     * Realiza un depósito si el monto es mayor a 1.
+     * @param monto Monto a depositar
+     */
     @Override
-    public boolean deposito(double monto) {
-        if (monto > 1) { // Puede depositar valores mayores a 1
-            setBalance(getBalance() + monto);
-            System.out.println("Depósito exitoso en Cuenta Corriente. Monto: $" + monto);
-            return true;
-        } else {
-            System.out.println("Error: No puede depositar valores menores o iguales a 1 en Cuenta Corriente");
-            return false;
+    public void deposito(double monto) {
+        if (monto > 1) {
+            setSaldo(getSaldo() + monto);
         }
     }
 
-    // Implementación del método retiro
+    /**
+     * Retira un monto si no supera el saldo + sobregiro.
+     * No modifica el sobregiro, ya que es constante.
+     * @param monto Monto a retirar
+     */
     @Override
-    public boolean retiro(double monto) {
-        if (monto > 0) {
-            double disponible = getBalance() + sobregiro;
-            if (disponible >= monto) {
-                setBalance(getBalance() - monto);
-                System.out.println("Retiro exitoso de Cuenta Corriente. Monto: $" + monto);
-                return true;
-            } else {
-                System.out.println("Error: Fondos insuficientes en Cuenta Corriente. Disponible: $" + disponible);
-                return false;
-            }
-        } else {
-            System.out.println("Error: El monto a retirar debe ser mayor a cero");
-            return false;
+    public void retiro(double monto) {
+        if (monto > 0 && monto <= (getSaldo() + sobregiro)) {
+            setSaldo(getSaldo() - monto);
         }
     }
 
-    // Implementación del cálculo de intereses (no aplica para cuenta corriente)
+    /**
+     * La cuenta corriente no genera intereses.
+     * @return Siempre retorna 0.
+     */
     @Override
     public double calculoInteres() {
-        return 0.0; // Las cuentas corrientes no generan intereses
+        return 0;
     }
 
-    // Método toString usando sobreescritura
+    /**
+     * Devuelve la descripción del tipo de cuenta.
+     * @return "corriente: "
+     */
+    public String descripcion() {
+        return "corriente: ";
+    }
+
+    /**
+     * Representación en cadena de la cuenta corriente.
+     * Incluye el saldo base y el sobregiro permitido.
+     * @return Cadena con detalles de la cuenta
+     */
     @Override
     public String toString() {
-        return "Cuenta Corriente: [saldo actual: " + String.format("%.2f", getBalance()) +
-                "] [sobregiro: " + String.format("%.2f", sobregiro) + "]";
+        return super.toString() + " sobregiro: " + String.format("%.2f", sobregiro);
     }
 
-    public double calculoInteres(){
-        return balance *
-    }
-
-    public String toString(){
-        return super()
+    /**
+     * Compara esta cuenta con otra por igualdad de saldo y sobregiro.
+     * @param obj Objeto a comparar
+     * @return true si saldo y sobregiro son iguales
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CuentaCorriente)) return false;
+        CuentaCorriente otra = (CuentaCorriente) obj;
+        return this.getSaldo() == otra.getSaldo() && this.sobregiro == otra.sobregiro;
     }
 }
