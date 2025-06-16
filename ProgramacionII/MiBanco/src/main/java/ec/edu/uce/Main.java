@@ -27,7 +27,7 @@ public class Main {
         }
 
         Banco.agregarEmpleado(new Empleado());
-        Banco.agregarEmpleado(new Manager("Lucas","Paez"));
+        Banco.agregarEmpleado(new Manager("Arturo","Paez"));
         Banco.agregarEmpleado(new Director("Patricio","Villavicencio"));
 
         System.out.println(Banco.consultarEmpleados());
