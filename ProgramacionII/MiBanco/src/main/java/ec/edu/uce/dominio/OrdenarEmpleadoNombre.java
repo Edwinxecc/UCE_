@@ -1,19 +1,15 @@
 package ec.edu.uce.dominio;
-/**
- * @author Edwin Caiza
- */
 
 import java.util.Comparator;
 
-public class OrdenarClienteNombre implements Comparator<Cliente> {
-
+public class OrdenarEmpleadoNombre implements Comparator<Empleado> {
     @Override
-    public int compare(Cliente o1, Cliente o2) {
+    public int compare(Empleado o1, Empleado o2) {
         int resultado = o1.getApellido().compareTo(o2.getApellido());
-
-        if (resultado != 0) {
+        if (resultado != 0){
             return resultado;
-        } else
+        }else {
             return 0;
+        }
     }
 }

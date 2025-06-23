@@ -1,13 +1,14 @@
 package ec.edu.uce.dominio;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Esta clase representa a un **empleado** dentro de la estructura bancaria.
  * Almacena datos personales y laborales como nombre, salario, género, y otros.
- * @author Cinthya Olipa
+ * @author Edwin Caiza
  */
-public class Empleado {
+public class Empleado implements Comparable<Empleado> {
 
     /**
      * El **salario básico** referencial para todos los empleados del banco.
@@ -44,6 +45,15 @@ public class Empleado {
      * Constructor completo para crear un empleado con todos sus datos.
      * El ID del empleado se asigna automáticamente al instanciarlo.
      */
+
+    public Empleado(int id, String nombre, String apellido, double salario, Genero gen){
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.salario = salario;
+        this.genero = gen;
+    }
+
     public Empleado(String nombre, String apellido, String correo, String direccion,
                     String[] telefonos, Fecha fechaNacimiento, Genero genero,
                     double salario, String puesto, Fecha fechaContratacion) {
@@ -209,5 +219,21 @@ public class Empleado {
     @Override
     public int hashCode() {
         return Integer.hashCode(id); // El hash se basa en el ID único.
+    }
+
+    /**
+     *
+     * @param o the object to be compared.
+     * @return numero negativo o positivo y 0 si son iguales
+     */
+
+    public int compareTo(Empleado o) {
+        int resultado = this.apellido.compareTo(o.getNombre()); // comparacion entre objetos
+        if (resultado > 0){
+            return 1;
+        }else if (resultado < 0){
+            return -1;
+        }
+        return 0;
     }
 }

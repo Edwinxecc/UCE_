@@ -207,15 +207,20 @@ public class Cliente implements Comparable<Cliente> {
     }
 
 
-    @Override
-    public int compareTo(Cliente o) { //REVISAR
-        int resultado= this.nombre.compareTo(o.getNombre());
-        if(resultado>0){
+    /**
+     *
+     * @param o the object to be compared.
+     * @return numero negativo o positivo y 0 si son iguales
+     */
+
+    public int compareTo(Cliente o) {
+        int resultado = this.apellido.compareTo(o.getNombre()); // comparacion entre objetos
+        if (resultado > 0){
             return 1;
-        }else if (resultado<0) {
+        }else if (resultado < 0){
             return -1;
-        }else
-            return 0;
+        }
+        return 0;
     }
 
 }
