@@ -1,374 +1,221 @@
-/**
- * @author Edwin Caiza
- */
 package ec.edu.uce.dominio;
 
-import java.awt.font.TextHitInfo;
-import java.util.Date;
+import java.util.Arrays;
 
 /**
- * Representa un cliente del banco con información personal, contacto y género.
- * Contiene atributos como nombre, apellido, correo electrónico, dirección, teléfono y un ID único.
+ * Clase Cliente, que representa a un usuario del banco y gestiona sus datos.
+ *
  */
-public class Cliente {
-    /**
-     * Contador estático para asignar IDs únicos autoincrementales.
-     */
-    private static int contadorId = 1;
+public class Cliente implements Comparable<Cliente> {
 
-    /**
-     * Identificador único del cliente.
-     */
-    private int clienteId;
+    // Contador estático para asignar IDs únicos automáticamente
+    public static int contador;
 
-    /**
-     * Nombre del cliente.
-     */
+    static {
+        contador = 0;
+    }
+
+    private final int id; // Identificador único e inmutable del cliente
     private String nombre;
-
-    /**
-     * Apellido del cliente.
-     */
     private String apellido;
-
-    /**
-     * Correo electrónico del cliente.
-     */
     private String correo;
-
-    /**
-     * Fecha relacionada con el cliente (puede ser fecha de nacimiento u otra).
-     */
-    private Date fecha;
-
-    /**
-     * Dirección del cliente.
-     */
     private String direccion;
-
-    /**
-     * Teléfono de contacto del cliente.
-     */
-    private String telefono;
-
-    /**
-     * Género del cliente.
-     */
+    private String[] telefonos;
+    private Fecha fechaNacimiento;
     private Genero genero;
+    private Cuenta[] cuentas; // Arreglo para almacenar las cuentas del cliente
+    private int numCuentas; // Contador de cuentas asociadas
 
     /**
-     * Constructor por defecto que inicializa el cliente con valores vacíos y asigna un ID automático.
+     * Constructor principal para crear una nueva instancia de Cliente con todos sus datos.
+     * El ID del cliente se genera automáticamente y es único.
      */
-    public Cliente() {
-        this(1,"Sin nombre","Sin apellido","x@mail","sin direccion","00000000", Genero.FEMENINO);
+    public Cliente(String nombre, String apellido, String correo, String direccion,
+                   String[] telefonos, Fecha fechaNacimiento, Genero genero) {
+        this.id = ++contador; // Asigna un ID único autoincrementado
+
+        setNombre(nombre);
+        setApellido(apellido);
+        setCorreo(correo);
+        setDireccion(direccion);
+        setTelefonos(telefonos);
+        setFechaNacimiento(fechaNacimiento);
+        setGenero(genero);
+
+        this.cuentas = new Cuenta[5]; // Capacidad inicial para las cuentas
+        this.numCuentas = 0;
     }
 
     /**
-     * Constructor que inicializa el cliente con nombre, apellido, correo y fecha.
-     * Asigna un ID automático.
-     *
-     * @param nombre  nombre del cliente
-     * @param apellido apellido del cliente
-     * @param correo  correo electrónico
-     * @param fecha   fecha asociada
+     * Constructor simplificado para crear un cliente con datos esenciales.
+     * Otros campos se inicializan con valores por defecto.
      */
-    public Cliente(String nombre, String apellido, String correo, Date fecha) {
-        this(contadorId++,nombre, apellido, correo, "", "", Genero.FEMENINO);
+    public Cliente(String nombre, String apellido, Genero genero) {
+        this(nombre, apellido, "", "", new String[0], null, genero);
     }
 
     /**
-     * Constructor que inicializa todos los atributos, incluyendo ID y género.
-     *
-     * @param clienteId ID del cliente
-     * @param nombre    nombre del cliente
-     * @param apellido  apellido del cliente
-     * @param correo    correo electrónico
-     * @param direccion dirección del cliente
-     * @param telefono  teléfono del cliente
-     * @param genero    género del cliente
-     */
-    public Cliente(int clienteId, String nombre, String apellido, String correo, String direccion, String telefono, Genero genero) {
-        this.clienteId = clienteId;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.correo = correo;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.genero = genero;
-        this.numCuentas=0;
-        this.cuentas=new Cuenta[3];
-    }
-
-    /**
-     * Constructor que inicializa el cliente con ID, nombre, apellido y género.
-     *
-     * @param id       ID del cliente
-     * @param nombre   nombre del cliente
-     * @param apellido apellido del cliente
-     * @param genero   género del cliente
+     * Constructor para crear un cliente con un ID predefinido.
+     * Útil cuando el ID ya es conocido o viene de una fuente externa.
      */
     public Cliente(int id, String nombre, String apellido, Genero genero) {
-        this(contadorId++,nombre,apellido,"","","",genero);
+        this.id = id;
+        // Asegura que el contador estático no sea menor que el ID proporcionado
+        if (id >= contador) {
+            contador = id + 1;
+        }
+
+        setNombre(nombre);
+        setApellido(apellido);
+        setCorreo("");
+        setDireccion("");
+        setTelefonos(new String[0]);
+        setFechaNacimiento(null);
+        setGenero(genero);
+
+        this.cuentas = new Cuenta[5];
+        this.numCuentas = 0;
     }
 
-    /**
-     * Constructor de copia que clona los datos de otro cliente.
-     *
-     * @param nuevoCliente cliente a copiar
-     */
-    public Cliente(Cliente nuevoCliente) {
-        this.nombre = nuevoCliente.nombre;
-        this.apellido = nuevoCliente.apellido;
-        this.correo = nuevoCliente.correo;
-        this.fecha = nuevoCliente.fecha;
-        this.direccion = nuevoCliente.direccion;
-        this.telefono = nuevoCliente.telefono;
-        this.genero = nuevoCliente.genero;
-    }
+    // --- Métodos Getters y Setters ---
 
-    // Getters
+    public int getId() { return id; }
 
-    /**
-     * Obtiene el ID del cliente.
-     *
-     * @return ID del cliente
-     */
-    public int getClienteId() {
-        return clienteId;
-    }
-
-    /**
-     * Obtiene el nombre del cliente.
-     *
-     * @return nombre del cliente
-     */
-    public String getNombre() {
-        return nombre;
-    }
-
-    /**
-     * Obtiene el apellido del cliente.
-     *
-     * @return apellido del cliente
-     */
-    public String getApellido() {
-        return apellido;
-    }
-
-    /**
-     * Obtiene el correo electrónico del cliente.
-     *
-     * @return correo electrónico
-     */
-    public String getCorreo() {
-        return correo;
-    }
-
-    /**
-     * Obtiene la fecha asociada al cliente.
-     *
-     * @return fecha asociada
-     */
-    public Date getFecha() {
-        return fecha;
-    }
-
-    /**
-     * Obtiene la dirección del cliente.
-     *
-     * @return dirección del cliente
-     */
-    public String getDireccion() {
-        return direccion;
-    }
-
-    /**
-     * Obtiene el teléfono del cliente.
-     *
-     * @return teléfono del cliente
-     */
-    public String getTelefono() {
-        return telefono;
-    }
-
-    /**
-     * Obtiene el género del cliente.
-     *
-     * @return género del cliente
-     */
-    public Genero getGenero() {
-        return genero;
-    }
-
-    // Setters
-
-    /**
-     * Asigna un nuevo nombre al cliente.
-     *
-     * @param nombre nuevo nombre
-     */
+    public String getNombre() { return nombre; }
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = (nombre != null && !nombre.trim().isEmpty()) ? nombre : "Desconocido";
     }
 
-    /**
-     * Asigna un nuevo apellido al cliente.
-     *
-     * @param apellido nuevo apellido
-     */
+    public String getApellido() { return apellido; }
     public void setApellido(String apellido) {
-        this.apellido = apellido;
+        this.apellido = (apellido != null && !apellido.trim().isEmpty()) ? apellido : "Desconocido";
     }
 
-    /**
-     * Asigna un nuevo correo electrónico al cliente.
-     *
-     * @param correo nuevo correo
-     */
+    public String getCorreo() { return correo; }
     public void setCorreo(String correo) {
-        this.correo = correo;
+        this.correo = (correo != null) ? correo : "";
     }
 
-    /**
-     * Asigna una nueva fecha asociada al cliente.
-     *
-     * @param fecha nueva fecha
-     */
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    /**
-     * Asigna una nueva dirección al cliente.
-     *
-     * @param direccion nueva dirección
-     */
+    public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) {
-        this.direccion = direccion;
+        this.direccion = (direccion != null) ? direccion : "";
     }
 
-    /**
-     * Asigna un nuevo teléfono al cliente.
-     *
-     * @param telefono nuevo teléfono
-     */
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public String[] getTelefonos() { return telefonos; }
+    public void setTelefonos(String[] telefonos) {
+        this.telefonos = (telefonos != null) ? Arrays.copyOf(telefonos, telefonos.length) : new String[0];
     }
 
-    /**
-     * Asigna un nuevo género al cliente.
-     *
-     * @param genero nuevo género
-     */
+    public Fecha getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(Fecha fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public Genero getGenero() { return genero; }
     public void setGenero(Genero genero) {
-        this.genero = genero;
+        this.genero = (genero != null) ? genero : Genero.OTRO;
+    }
+
+    public Cuenta[] getCuentas() {
+        return Arrays.copyOf(cuentas, numCuentas); // Devuelve una copia para seguridad
+    }
+
+    public int getNumCuentas() { return numCuentas; }
+
+    /**
+     * Añade una cuenta a la colección de cuentas del cliente.
+     * Si el arreglo de cuentas está lleno, se redimensiona automáticamente.
+     */
+    public void agregarCuenta(Cuenta cuenta) {
+        if (cuenta == null) {
+            return;
+        }
+        // Redimensiona el arreglo si no hay espacio para una nueva cuenta.
+        if (numCuentas == cuentas.length) {
+            Cuenta[] nuevoArreglo = new Cuenta[cuentas.length * 2];
+            System.arraycopy(cuentas, 0, nuevoArreglo, 0, cuentas.length);
+            this.cuentas = nuevoArreglo;
+        }
+        cuentas[numCuentas++] = cuenta;
     }
 
     /**
-     * Devuelve una representación en cadena con los datos relevantes del cliente.
+     * Elimina una cuenta del cliente basándose en su índice en el arreglo.
+     * Desplaza los elementos subsiguientes para mantener la continuidad.
+     */
+    public boolean eliminarCuenta(int indice) {
+        if (indice < 0 || indice >= numCuentas) {
+            return false; // Índice fuera de rango.
+        }
+        // Mueve los elementos a la izquierda para rellenar el espacio vacío.
+        System.arraycopy(cuentas, indice + 1, cuentas, indice, numCuentas - 1 - indice);
+        cuentas[--numCuentas] = null; // Anula la referencia del último elemento y disminuye el contador.
+        return true;
+    }
+
+    /**
+     * Busca y retorna una cuenta del cliente por su índice.
+     */
+    public Cuenta buscarCuenta(int indice) {
+        if (indice >= 0 && indice < numCuentas) {
+            return cuentas[indice];
+        }
+        return null; // Cuenta no encontrada en el índice especificado.
+    }
+
+    /**
+     * Genera una cadena con los detalles de todas las cuentas asociadas a este cliente.
+     */
+    public String consultarCuentasDetalle() {
+        StringBuilder detalleCuentas = new StringBuilder();
+        if (numCuentas == 0) {
+            detalleCuentas.append("   - No hay cuentas asociadas a este cliente.\n");
+        } else {
+            for (int i = 0; i < numCuentas; i++) {
+                detalleCuentas.append("   Cuenta ").append(i + 1).append(": ").append(cuentas[i].toString()).append("\n");
+            }
+        }
+        return detalleCuentas.toString();
+    }
+
+    /**
+     * Compara este cliente con otro objeto basándose en su ID único.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Cliente cliente = (Cliente) obj;
+        return id == cliente.id; // Dos clientes son iguales si tienen el mismo ID.
+    }
+
+    /**
+     * Genera un código hash para el cliente, consistente con el método `equals`.
+     */
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id); // El hash se basa en el ID único.
+    }
+
+    /**
+     * Devuelve una representación en cadena con la información principal del cliente.
      */
     @Override
     public String toString() {
-        return "Cliente{" +
-                "id=" + clienteId +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", correo='" + correo + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", direccion='" + direccion + '\'' +
-                (genero != null ? ", genero=" + genero : "") +
-                '}';
-    }
-    /**
-     * Arreglo que almacena las cuentas.
-     */
-    private Cuenta[] cuentas = new Cuenta[0];
-    private int numCuentas;
-    /**
-     * Crea una nueva cuenta con el saldo especificado y la añade al arreglo de cuentas.
-     *
-     * @param saldo Saldo inicial de la nueva cuenta.
-     */
-    public void nuevoCuenta(double saldo) {
-        if (numCuentas == cuentas.length) {
-            Cuenta[] nuevoarr = cuentas;
-            cuentas = new Cuenta[numCuentas + 1];
-            System.arraycopy(nuevoarr, 0, cuentas, 0, numCuentas);
-        }
-        cuentas[numCuentas] = new CuentaAhorro(saldo);  // <-- Aquí la clase concreta
-        numCuentas++;
-    }
-
-    public void nuevoCuenta(Cuenta nuevaCuenta) {
-        if (numCuentas == cuentas.length) {
-            Cuenta[]nuevoarr = cuentas;
-            cuentas=new Cuenta[numCuentas+1];
-
-            System.arraycopy(nuevoarr,0,cuentas,0, numCuentas);
-        }
-        cuentas[numCuentas]=nuevaCuenta;
-        numCuentas++;
+        return "Cliente [ID=" + id + ", Nombre=" + nombre + ", Apellido=" + apellido +
+                ", Género=" + genero.getNombre() + ", Num. Cuentas=" + numCuentas + "]";
     }
 
 
-    /**
-     * Devuelve un arreglo con todas las cuentas actuales.
-     *
-     * @return arreglo de objetos Cuenta.
-     */
-    public Cuenta[] consultarCuentas() {
-        String texto="";
-        for (Cuenta c:cuentas){
-            if (c!=null)
-                texto+=c+"\r\n";
-        }
-        return cuentas;
+    @Override
+    public int compareTo(Cliente o) { //REVISAR
+        int resultado= this.nombre.compareTo(o.getNombre());
+        if(resultado>0){
+            return 1;
+        }else if (resultado<0) {
+            return -1;
+        }else
+            return 0;
     }
 
-    /**
-     * Modifica el saldo de la cuenta en la posición indicada.
-     *
-     * @param pos  Índice de la cuenta a modificar (de 0 a cuentas.length - 1).
-     * @param saldo Nuevo saldo que se asignará a la cuenta.
-     */
-    public void editarCuenta(int pos, double saldo) {
-        if (pos >= 0 && pos < cuentas.length) {
-            cuentas[pos].setSaldo(saldo);
-        }
-    }
-
-    /**
-     * Elimina la cuenta en la posición indicada.
-     *
-     * @param pos Índice de la cuenta a eliminar (de 0 a cuentas.length - 1).
-     */
-    public void eliminarCuenta(int pos) {
-        if (pos >= 0 && pos < cuentas.length) {
-            Cuenta[] nuevo = new Cuenta[cuentas.length - 1];
-            for (int i = 0, j = 0; i < cuentas.length; i++) {
-                if (i != pos) {
-                    nuevo[j++] = cuentas[i];
-                }
-            }
-            cuentas = nuevo;
-        }
-    }
-
-    /**
-     * Devuelve la cuenta en la posición indicada, o null si la posición no es válida.
-     *
-     * @param pos Índice de la cuenta a buscar (de 0 a cuentas.length - 1).
-     * @return La cuenta encontrada o null si no existe.
-     */
-    public Cuenta buscarCuenta(int pos) {
-        if (pos >= 0 && pos < cuentas.length) {
-            return cuentas[pos];
-        }
-        return null;
-    }
-
-    public Cuenta[]getCuentas(){
-        return cuentas;
-    }
 }

@@ -1,95 +1,93 @@
-/**
- * @author Edwin Caiza
- */
-
 package ec.edu.uce.dominio;
 
 /**
- * Clase abstracta que representa una cuenta bancaria básica con saldo.
- * Define métodos abstractos para depósito, retiro, cálculo de intereses,
- * y descripción, que deben ser implementados por las subclases específicas.
+ * Clase abstracta **Cuenta**, establece la estructura fundamental para todos los tipos de cuentas bancarias.
+ * Define las operaciones básicas como depositar y retirar, que serán implementadas por sus subclases
+ * (por ejemplo, CuentaAhorro, CuentaCorriente), adaptándose a sus lógicas específicas.
+ *
  */
 public abstract class Cuenta {
 
-    protected double saldo;
+    /**
+     * Almacena el **balance actual** de la cuenta.
+     */
+    protected double balance; // Accesible directamente por las clases que hereden.
 
     /**
-     * Constructor por defecto que inicializa el saldo en cero.
+     * Constructor predeterminado.
+     * Inicializa el balance de la cuenta en **cero**.
      */
     public Cuenta() {
-        this.saldo = 0;
+        this.balance = 0.0;
     }
 
     /**
-     * Constructor que inicializa la cuenta con un saldo específico.
-     *
-     * @param saldo saldo inicial de la cuenta
+     * Constructor que permite especificar un **balance inicial** al crear la cuenta.
+     * @param balance Saldo inicial para la cuenta.
      */
-    public Cuenta(double saldo) {
-        this.saldo = saldo;
+    public Cuenta(double balance) {
+        this.balance = balance;
     }
 
     /**
-     * Obtiene el saldo actual de la cuenta.
-     *
-     * @return saldo actual
+     * Recupera el **balance actual** de la cuenta.
+     * @return El balance numérico de la cuenta.
      */
-    public double getSaldo() {
-        return saldo;
+    public double getBalance() {
+        return balance;
     }
 
     /**
-     * Establece un nuevo saldo en la cuenta.
-     *
-     * @param saldo nuevo saldo a establecer
+     * Actualiza el **balance** de la cuenta con un nuevo valor.
+     * @param balance El nuevo valor del balance.
      */
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     /**
-     * Realiza un depósito en la cuenta.
-     *
-     * @param monto cantidad a depositar
+     * **Método abstracto** para realizar un depósito.
+     * Cada tipo de cuenta definirá su propia lógica para esta operación.
+     * @param monto Cantidad de dinero a depositar.
+     * @return `true` si la operación de depósito fue exitosa, `false` si no.
      */
-    public abstract void deposito(double monto);
+    public abstract boolean deposito(double monto);
 
     /**
-     * Realiza un retiro de la cuenta.
-     *
-     * @param monto cantidad a retirar
+     * **Método abstracto** para procesar un retiro.
+     * Las subclases deberán implementar el comportamiento específico para retirar fondos.
+     * @param monto Cantidad de dinero a retirar.
+     * @return `true` si el retiro se completó con éxito, `false` en caso contrario.
      */
-    public abstract void retiro(double monto);
+    public abstract boolean retiro(double monto);
 
     /**
-     * Calcula y acumula el interés en la cuenta.
-     *
-     * @return monto de interés calculado
+     * **Método abstracto** para calcular intereses u otras métricas financieras asociadas a la cuenta.
+     * @return El resultado del cálculo financiero (ej. monto de interés generado).
      */
     public abstract double calculoInteres();
 
     /**
-     * Devuelve una pequeña descripción del tipo de cuenta.
-     *
-     * @return descripción breve de la cuenta
+     * **Método abstracto** que proporciona una descripción textual del tipo de cuenta.
+     * @return Un `String` que describe el tipo de cuenta (ej. "Cuenta de Ahorros", "Cuenta Corriente").
      */
     public abstract String descripcion();
 
     /**
-     * Representación en cadena del estado de la cuenta.
-     *
-     * @return cadena con información de la cuenta
+     * Genera una representación en cadena del objeto `Cuenta`.
+     * Este método se espera que sea sobrescrito por las subclases para incluir detalles específicos.
+     * @return Una cadena formateada con la información básica de la cuenta.
      */
     @Override
     public String toString() {
-        return descripcion() + " ,saldo: " + this.saldo;
+        return "Cuenta [Balance actual: $" + String.format("%.2f", balance) + "]";
     }
 
     /**
-     * Compara esta cuenta con otro objeto para igualdad.
-     *
-     * @param obj objeto a comparar
-     * @return true si son iguales, false en caso contrario
+     * **Método abstracto** para determinar si dos objetos `Cuenta` son equivalentes.
+     * La lógica de comparación debe ser definida por las clases que heredan.
+     * @param obj El objeto con el que se va a comparar.
+     * @return `true` si los objetos son considerados iguales, `false` si no lo son.
      */
     @Override
     public abstract boolean equals(Object obj);

@@ -1,211 +1,235 @@
-/**
- * @author Edwin Caiza
- */
 package ec.edu.uce.dominio;
 
+import java.util.Arrays;
+
 /**
- * Clase que representa un banco con clientes y empleados.
+ * Clase principal para la gestión de las operaciones bancarias.
+ * Implementa el patrón Singleton para asegurar una única instancia.
+ * @author Edwin Caiza
  */
 public class Banco {
 
-    private static final Banco instance=new Banco();
+    // Instancia única del Banco (Singleton)
+    private static final Banco instance = new Banco();
 
-    public static Banco getInstance(){
+
+    // Arreglo y contador para la gestión de clientes
+    private static Cliente[] clientes;
+    private static int numClientes;
+
+    // Arreglo y contador para la gestión de empleados
+    private static Empleado[] staff;
+    private static int numEmpleados;
+
+    // Bloque de inicialización estático para los arreglos y contadores
+    static {
+        numEmpleados = 0;
+        staff = new Empleado[5]; // Capacidad inicial para empleados
+        numClientes = 0;
+        clientes = new Cliente[5]; // Capacidad inicial para clientes
+    }
+
+    // Constructor privado, clave para el patrón Singleton
+    private Banco() {
+        // La inicialización de arreglos se realiza en el bloque estático.
+    }
+
+    /**
+     * Proporciona el punto de acceso global a la única instancia del Banco.
+     */
+    public static Banco getInstance() {
         return instance;
     }
 
-    /**
-     * Arreglo de clientes registrados en el banco.
-     */
-    private static Cliente[] clientes;
+    // --- Métodos de Consulta General ---
 
-    /**
-     * Número actual de clientes en el banco.
-     */
-    private static int numClientes;
-
-    /**
-     * Arreglo de empleados (staff) del banco.
-     */
-    private static Empleado[] staff;
-
-    /**
-     * Número actual de empleados en el banco.
-     */
-    private static int numEmpleados;
-
-    static {
-        numEmpleados=0;
-        staff = new Empleado[5];
-        numClientes=0;
-        clientes = new Cliente[5];
-    }
-
-    /**
-     * Constructor que inicializa el banco con capacidad para 3 clientes y 3 empleados.
-     */
-
-    /**
-     * Obtiene la cantidad actual de clientes registrados en el banco.
-     *
-     * @return número de clientes
-     */
     public static int getNumClientes() {
         return numClientes;
     }
 
-    /**
-     * Obtiene el cliente en la posición especificada.
-     *
-     * @param indice índice del cliente en el arreglo
-     * @return objeto Cliente en la posición dada
-     */
     public static Cliente getCliente(int indice) {
-        return clientes[indice];
+        if (indice >= 0 && indice < numClientes) {
+            return clientes[indice];
+        }
+        return null; // El índice está fuera de los límites válidos.
     }
 
     public static Cliente[] getClientes() {
-        return clientes;
+        return Arrays.copyOf(clientes, numClientes); // Devuelve una copia para proteger los datos originales.
+    }
+
+    public static int getNumEmpleados() {
+        return numEmpleados;
     }
 
     public static Empleado[] getStaff() {
-        return staff;
+        return Arrays.copyOf(staff, numEmpleados); // Devuelve una copia para proteger los datos originales.
     }
 
-
-    /**
-     * Agrega un nuevo cliente al banco.
-     * Si el arreglo está lleno, se expande dinámicamente para acomodar más clientes.
-     *
-     * @param id       identificador único del cliente
-     * @param nombre   nombre del cliente
-     * @param apellido apellido del cliente
-     * @param genero   género del cliente (enum Genero)
-     */
-    public static void agregarCliente(int id, String nombre, String apellido, Genero genero) {
-        Cliente cliente = new Cliente(id, nombre, apellido, genero);
+    public static void agregarCliente(int idCliente, String nombre, String apellido, Genero genero) {
+        if (buscarCliente(idCliente) != null) {
+            return; // Ya existe un cliente con este ID.
+        }
+        // Si el arreglo está lleno, duplica su tamaño.
         if (numClientes == clientes.length) {
-            Cliente[] cliaux = clientes;
-            clientes = new Cliente[numClientes + 1];
-            System.arraycopy(cliaux, 0, clientes, 0, numClientes);
+            clientes = Arrays.copyOf(clientes, clientes.length * 2);
         }
-        clientes[numClientes] = cliente;
-        numClientes++;
+        clientes[numClientes++] = new Cliente(idCliente, nombre, apellido, genero);
     }
 
-    /**
-     * Agrega un nuevo empleado al banco.
-     * Si el arreglo está lleno, se expande dinámicamente para acomodar más empleados.
-     *
-     * @param empleado objeto Empleado a agregar
-     */
-    public static boolean agregarEmpleado(Empleado empleado) {
-        boolean respuesta=false;
-        if (!validarEmpleado(empleado)){
-            if (numEmpleados == staff.length) {
-                Empleado[] empaux = staff;
-                staff = new Empleado[numEmpleados + 1];
-                System.arraycopy(empaux, 0, staff, 0, numEmpleados);
+    public static void agregarCliente(Cliente cliente) {
+        if (cliente == null || buscarCliente(cliente.getId()) != null) {
+            return; // Cliente inválido o con ID duplicado.
+        }
+        // Si el arreglo de clientes está lleno, lo redimensiona.
+        if (numClientes == clientes.length) {
+            clientes = Arrays.copyOf(clientes, clientes.length * 2);
+        }
+        clientes[numClientes++] = cliente;
+    }
+
+    public static void editarCliente(int idCliente, int nuevoId, String nuevoNombre, String nuevoApellido, Genero nuevoGenero) {
+        int indiceClienteAEditar = -1;
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getId() == idCliente) {
+                indiceClienteAEditar = i;
+                break;
             }
-            staff[numEmpleados] = empleado;
-            numEmpleados=numEmpleados++;
-            System.out.println(numEmpleados);
-            respuesta=true;
         }
-        return respuesta;
-    }
 
-    /**
-     * Edita los datos de un cliente existente en el índice dado.
-     *
-     * @param indice   posición del cliente a editar
-     * @param id       nuevo id del cliente
-     * @param nombre   nuevo nombre
-     * @param apellido nuevo apellido
-     * @param genero   nuevo género
-     */
-    public static void editarCliente(int indice, int id, String nombre, String apellido, Genero genero) {
-        clientes[indice] = new Cliente(id, nombre, apellido, genero);
-    }
-
-    /**
-     * Elimina un cliente del banco en la posición dada, desplazando los demás clientes hacia la izquierda.
-     *
-     * @param indice índice del cliente a eliminar
-     */
-    public static void eliminarCliente(int indice) {
-        if (indice >= 0 && indice < numClientes) {
-            for (int i = indice; i < numClientes - 1; i++) {
-                clientes[i] = clientes[i + 1];
+        if (indiceClienteAEditar != -1) {
+            // Comprueba si el nuevo ID ya es utilizado por otro cliente (evitando el mismo cliente).
+            if (nuevoId != idCliente && buscarCliente(nuevoId) != null) {
+                return;
             }
-            clientes[numClientes - 1] = null;
-            numClientes--;
-        } else {
-            System.out.println("Índice fuera de rango.");
+            clientes[indiceClienteAEditar] = new Cliente(nuevoId, nuevoNombre, nuevoApellido, nuevoGenero);
         }
     }
 
-    /**
-     * Devuelve una cadena con la información de todos los clientes del banco.
-     *
-     * @return String con la lista de clientes
-     */
+    public static void eliminarCliente(int idCliente) {
+        int indiceAEliminar = -1;
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getId() == idCliente) {
+                indiceAEliminar = i;
+                break;
+            }
+        }
+
+        if (indiceAEliminar != -1) {
+            // Desplaza los elementos subsiguientes para ocupar el espacio.
+            System.arraycopy(clientes, indiceAEliminar + 1, clientes, indiceAEliminar, numClientes - 1 - indiceAEliminar);
+            clientes[--numClientes] = null; // Anula la referencia y decrementa el contador.
+        }
+    }
+
     public static String consultarClientes() {
-        String texto = "";
-        for (Cliente cliente : clientes) {
-            if (cliente != null) {
-                texto += cliente + "\r\n";
+        if (numClientes == 0) {
+            return "Actualmente no hay clientes registrados en el banco.";
+        }
+        String clientesString = "";
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null) {
+                clientesString = clientesString + clientes[i].toString() + "\n";
             }
         }
-        return texto;
+        return clientesString;
     }
 
-    /**
-     * Devuelve una cadena con la información de todos los empleados del banco.
-     *
-     * @return String con la lista de empleados
-     */
+    public static Cliente buscarCliente(int idCliente) {
+        for (int i = 0; i < numClientes; i++) {
+            if (clientes[i] != null && clientes[i].getId() == idCliente) {
+                return clientes[i];
+            }
+        }
+        return null; // Cliente no encontrado.
+    }
+
+    public static boolean agregarEmpleado(Empleado empleado) {
+        if (empleado == null || validarEmpleado(empleado)) {
+            return false; // El empleado es nulo o ya existe.
+        }
+        // Redimensiona el arreglo si no hay espacio.
+        if (numEmpleados == staff.length) {
+            staff = Arrays.copyOf(staff, staff.length * 2);
+        }
+        staff[numEmpleados++] = empleado;
+        return true;
+    }
+
+    public static boolean editarEmpleado(int idEmpleado, Empleado nuevosDatosEmpleado) {
+        if (nuevosDatosEmpleado == null) {
+            return false;
+        }
+
+        for (int i = 0; i < numEmpleados; i++) {
+            if (staff[i] != null && staff[i].getId() == idEmpleado) {
+                // Actualiza los atributos comunes del empleado.
+                staff[i].setNombre(nuevosDatosEmpleado.getNombre());
+                staff[i].setApellido(nuevosDatosEmpleado.getApellido());
+                staff[i].setCorreo(nuevosDatosEmpleado.getCorreo());
+                staff[i].setDireccion(nuevosDatosEmpleado.getDireccion());
+                staff[i].setTelefonos(nuevosDatosEmpleado.getTelefonos());
+                staff[i].setFechaNacimiento(nuevosDatosEmpleado.getFechaNacimiento());
+                staff[i].setGenero(nuevosDatosEmpleado.getGenero());
+                staff[i].setSalario(nuevosDatosEmpleado.getSalario());
+                staff[i].setPuesto(nuevosDatosEmpleado.getPuesto());
+                staff[i].setFechaContratacion(nuevosDatosEmpleado.getFechaContratacion());
+
+                // Actualiza atributos específicos si es una subclase (Manager o Director).
+                if (staff[i] instanceof Manager && nuevosDatosEmpleado instanceof Manager) {
+                    ((Manager) staff[i]).setDeptNombre(((Manager) nuevosDatosEmpleado).getDeptNombre());
+                }
+                if (staff[i] instanceof Director && nuevosDatosEmpleado instanceof Director) {
+                    ((Director) staff[i]).setPresupuesto(((Director) nuevosDatosEmpleado).getPresupuesto());
+                    ((Director) staff[i]).setComision(((Director) nuevosDatosEmpleado).getComision());
+                }
+                return true;
+            }
+        }
+        return false; // Empleado no encontrado.
+    }
+
+    public static boolean eliminarEmpleado(int idEmpleado) {
+        for (int i = 0; i < numEmpleados; i++) {
+            if (staff[i] != null && staff[i].getId() == idEmpleado) {
+                // Desplaza los elementos para llenar el hueco del empleado eliminado.
+                System.arraycopy(staff, i + 1, staff, i, numEmpleados - 1 - i);
+                staff[--numEmpleados] = null;
+                return true;
+            }
+        }
+        return false; // Empleado no encontrado.
+    }
+
     public static String consultarEmpleados() {
-        String texto = "";
-        for (Empleado e : staff) {
-            if (e != null) {
-                texto += e + "\r\n";
+        if (numEmpleados == 0) {
+            return "Actualmente no hay empleados registrados en el banco.";
+        }
+        String empleadosString = "";
+        for (int i = 0; i < numEmpleados; i++) {
+            if (staff[i] != null) {
+                empleadosString = empleadosString + staff[i].toString() + "\n";
             }
         }
-        return texto;
+        return empleadosString;
     }
 
-    /**
-     * Representación en cadena del banco, mostrando clientes y empleados.
-     */
+    public static boolean validarEmpleado(Empleado empleado) {
+        if (empleado == null) {
+            return false;
+        }
+        for (int i = 0; i < numEmpleados; i++) {
+            if (staff[i] != null && staff[i].equals(empleado)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
-        return "Banco:\n" + consultarClientes() + "\nEmpleados:\n" + consultarEmpleados();
+        return "=============== Resumen General del Banco ===============\n\n" +
+                "--- Clientes Registrados ---\n" + consultarClientes() + "\n" +
+                "--- Empleados del Staff ---\n" + consultarEmpleados();
     }
-    /**
-     * Busca y devuelve el cliente en la posición especificada.
-     *
-     * @param indice posición del cliente a buscar
-     * @return Cliente si existe en esa posición, o null si no existe
-     */
-    public static Cliente buscarCliente(int indice) {
-        if (indice >= 0 && indice < numClientes) {
-            return clientes[indice];
-        } else {
-            System.out.println("Índice fuera de rango.");
-            return null;
-        }
-    }
-    public static boolean validarEmpleado(Empleado empleado){
-        boolean respuesta=false;
-        for(Empleado e:staff){
-            if (e!=null && e.equals(empleado)){
-                respuesta=true;
-            }
-            break;
-        }
-        return respuesta;
-    }
-
-
 }

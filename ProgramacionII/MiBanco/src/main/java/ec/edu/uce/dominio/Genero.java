@@ -1,25 +1,22 @@
-/**
- * @author Edwin Caiza
- */
 package ec.edu.uce.dominio;
 
 /**
- * Enumeración que representa el género de una persona.
- * Cada género tiene una abreviatura (carácter) y un nombre completo.
+ * Enumeración para representar los **géneros** disponibles: Femenino, Masculino y Otro.
+ * Cada opción de género cuenta con una abreviatura y un nombre completo.
  */
 public enum Genero {
 
     FEMENINO('F', "Femenino"),
-    MASCULINO('M', "Masculino");
+    MASCULINO('M', "Masculino"),
+    OTRO('O', "Otro");
 
-    private char abrev;
-    private String nombre;
+    private char abrev;   // Almacena la abreviatura del género (ej. 'F', 'M', 'O').
+    private String nombre; // Guarda el nombre completo del género.
 
     /**
-     * Constructor privado para inicializar cada valor del enum.
-     *
-     * @param abrev  Abreviatura del género (por ejemplo, 'F' para Femenino)
-     * @param nombre Nombre completo del género
+     * Constructor privado para las constantes de la enumeración `Genero`.
+     * @param abrev La abreviatura del género.
+     * @param nombre El nombre completo del género.
      */
     private Genero(char abrev, String nombre) {
         this.abrev = abrev;
@@ -27,27 +24,25 @@ public enum Genero {
     }
 
     /**
-     * Obtiene la abreviatura del género.
-     *
-     * @return abreviatura como carácter
+     * Obtiene la abreviatura asociada a este género.
+     * @return El carácter que representa la abreviatura del género.
      */
     public char getAbrev() {
         return abrev;
     }
 
     /**
-     * Obtiene el nombre completo del género.
-     *
-     * @return nombre del género
+     * Obtiene el nombre completo de este género.
+     * @return Una cadena con el nombre completo del género.
      */
     public String getNombre() {
         return nombre;
     }
 
     /**
-     * Devuelve el nombre completo del género como representación de texto.
-     *
-     * @return nombre del género
+     * Proporciona el nombre completo del género como su representación en cadena.
+     * Esto es útil al imprimir directamente una instancia de `Genero`.
+     * @return El nombre completo del género.
      */
     @Override
     public String toString() {
