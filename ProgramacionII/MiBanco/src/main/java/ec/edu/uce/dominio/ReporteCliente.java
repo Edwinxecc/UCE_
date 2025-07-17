@@ -1,40 +1,24 @@
-/**
- * @author Edwin Caiza
- */
 package ec.edu.uce.dominio;
 
-/**
- * Clase de utilidad encargada de generar un **informe detallado** de los clientes
- * y todas las cuentas bancarias asociadas a cada uno.
- */
+import ec.edu.uce.util.DAOException;
+
 public class ReporteCliente {
 
-    /**
-     * Genera un **reporte exhaustivo** de todos los clientes registrados en el sistema del banco.
-     * Este informe abarca la información personal de cada cliente y un listado completo de sus cuentas bancarias.
-     *
-     * @return Una cadena de texto (`String`) que contiene el reporte final de clientes.
-     */
-    public static String reporteClientes() {
-        StringBuilder textoReporte = new StringBuilder("Reporte de Clientes\n");
-        Banco banco = Banco.getInstance(); // Accede a la única instancia del banco.
+    public static String reporteClientes() throws DAOException {
+        Banco banco = Banco.getInstance();
+        int numClientes = banco.getNumClientes();
+        StringBuilder texto = new StringBuilder("Reporte Clientes\n");
 
-        // Recorre la colección de clientes obtenidos del banco.
-        for (Cliente cliente : banco.getClientes()) {
-            if (cliente != null) {
-                textoReporte.append("----------------------------------------\n");
-                textoReporte.append("CLIENTE: ").append(cliente).append("\n"); // Añade la información esencial del cliente.
-
-                textoReporte.append("Cuentas del Cliente:\n");
-                // Verifica y añade el detalle de las cuentas del cliente.
-                if (cliente.getNumCuentas() == 0) {
-                    textoReporte.append("   - No tiene cuentas bancarias asociadas.\n");
-                } else {
-                    textoReporte.append(cliente.consultarCuentasDetalle());
+        for (int i = 0; i < numClientes; i++) {
+            Cliente cli = banco.getCliente(i);
+            if (cli != null) {
+                texto.append(cli).append("\n");
+                for (Cuenta c : cli.getCuentas()) {
+                    texto.append(c).append("\n");
                 }
-                textoReporte.append("\n"); // Añade una línea en blanco para separar los clientes en el reporte.
+                texto.append("\n");
             }
         }
-        return textoReporte.toString();
+        return texto.toString();
     }
 }

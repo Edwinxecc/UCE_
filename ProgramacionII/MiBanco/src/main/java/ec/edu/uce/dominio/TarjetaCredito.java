@@ -1,21 +1,19 @@
 package ec.edu.uce.dominio;
 
 public class TarjetaCredito extends Cuenta {
-    private double cupo;        // El crédito disponible actual en la tarjeta.
-    private double cupoMaximo;  // El límite total de crédito que la tarjeta puede tener.
+    private double cupo;        // Crédito disponible
+    private double cupoMaximo;  // Límite máximo de crédito
 
-    // Constructor predeterminado.
     public TarjetaCredito() {
-        super(); // Inicializa el balance de la cuenta a 0.0.
-        this.cupoMaximo = 1000; // Define un límite máximo de crédito por defecto.
-        this.cupo = cupoMaximo; // Inicialmente, el cupo disponible es igual al cupo máximo.
+        super();
+        this.cupoMaximo = 1000; // ejemplo límite máximo de crédito
+        this.cupo = cupoMaximo; // inicialmente todo el cupo está disponible
     }
 
-    // Constructor que permite definir un saldo inicial y un límite de cupo máximo.
     public TarjetaCredito(double saldo, double cupoMaximo) {
-        super(saldo); // Inicializa el balance (saldo) de la superclase.
+        super(saldo);
         this.cupoMaximo = cupoMaximo;
-        this.cupo = cupoMaximo; // Al inicio, el cupo disponible es el total del cupo máximo.
+        this.cupo = cupoMaximo;
     }
 
     public double getCupo() {
@@ -23,11 +21,11 @@ public class TarjetaCredito extends Cuenta {
     }
 
     public void setCupo(double cupo) {
-        // Asegura que el cupo disponible no sea negativo y no exceda el cupo máximo.
+
         if (cupo < 0) {
-            this.cupo = 0; // El cupo no puede ser menor a cero.
+            this.cupo = 0;
         } else if (cupo > cupoMaximo) {
-            this.cupo = cupoMaximo; // El cupo disponible no puede superar su límite máximo.
+            this.cupo = cupoMaximo;
         } else {
             this.cupo = cupo;
         }
@@ -39,111 +37,103 @@ public class TarjetaCredito extends Cuenta {
 
     public void setCupoMaximo(double cupoMaximo) {
         this.cupoMaximo = cupoMaximo;
-        // Ajusta el cupo actual si el nuevo cupo máximo es menor que el cupo disponible.
+
         if (this.cupo > cupoMaximo) {
             this.cupo = cupoMaximo;
         }
     }
 
     @Override
-    public boolean deposito(double monto) {
+    public void deposito(double monto) {
         if (monto > 0) {
-            // Calcula el monto de la deuda pendiente sobre el cupo.
-            double deuda = cupoMaximo - cupo;
-            if (deuda < 0) { // Si el cupo actual es mayor al cupoMaximo, no hay deuda de cupo.
+
+            double deuda;
+            if ((cupoMaximo - cupo) > 0) {
+                deuda = cupoMaximo - cupo;
+            } else {
                 deuda = 0;
             }
 
-            // El monto depositado se usa primero para "restaurar" el cupo consumido.
-            double pagoAlCupo = Math.min(monto, deuda);
-            double nuevoCupo = cupo + pagoAlCupo;
-            setCupo(nuevoCupo); // Actualiza el cupo disponible usando el setter para validación.
-
-            // Si aún queda dinero después de restaurar el cupo, se añade al balance de la cuenta.
-            double restante = monto - pagoAlCupo;
-            if (restante > 0) {
-                double nuevoBalance = getBalance() + restante;
-                setBalance(nuevoBalance);
+            double pago;
+            if (monto < deuda) {
+                pago = monto;
+            } else {
+                pago = deuda;
             }
-            return true; // El depósito se considera exitoso si el monto es positivo.
+
+            double nuevoCupo = cupo + pago;
+            setCupo(nuevoCupo);
+
+            double restante = monto - pago;
+            if (restante > 0) {
+                double nuevoSaldo = getSaldo() + restante;
+                setSaldo(nuevoSaldo);
+            }
         }
-        return false;
     }
 
     @Override
-    public boolean retiro(double monto) {
+    public void retiro(double monto) {
         if (monto > 0) {
-            // El total disponible para gastar incluye el balance actual y el cupo disponible.
-            double disponibleTotal = getBalance() + cupo;
 
-            if (monto <= disponibleTotal) {
-                if (monto <= getBalance()) {
-                    // Si el monto del retiro es cubierto por el saldo, se descuenta directamente del saldo.
-                    double nuevoBalance = getBalance() - monto;
-                    setBalance(nuevoBalance);
+            double disponible = getSaldo() + cupo;
+
+            if (monto <= disponible) {
+                if (monto <= getSaldo()) {
+
+                    double nuevoSaldo = getSaldo() - monto;
+                    setSaldo(nuevoSaldo);
                 } else {
-                    // Si el monto excede el saldo, se consume el saldo y el resto se descuenta del cupo.
-                    double restante = monto - getBalance();
-                    setBalance(0); // El balance se reduce a cero.
 
-                    double nuevoCupo = cupo - restante; // El cupo disponible se reduce.
-                    setCupo(nuevoCupo); // Actualiza el cupo disponible usando el setter para validación.
+                    double restante = monto - getSaldo();
+                    setSaldo(0);
+
+                    double nuevoCupo = cupo - restante;
+                    setCupo(nuevoCupo);
                 }
-                return true; // El retiro fue exitoso.
             } else {
-                return false; // Fondos insuficientes (saldo + cupo).
+                System.out.println("Límite de crédito superado");
             }
         }
-        return false;
     }
 
     @Override
     public double calculoInteres() {
-        // Calcula el monto de crédito que ha sido utilizado.
+
         double creditoUsado = cupoMaximo - cupo;
         if (creditoUsado <= 0) {
-            return 0; // Si no hay crédito utilizado, no se genera interés.
+            return 0;
         }
 
-        double interes = creditoUsado * 0.05; // Calcula el interés (por ejemplo, 5% sobre el crédito usado).
+        double interes = creditoUsado * 0.05;
 
-        // El interés generado se suma a la "deuda", lo que reduce el cupo disponible.
         double nuevoCupo = cupo - interes;
-        setCupo(nuevoCupo); // Actualiza el cupo disponible usando el setter.
+        setCupo(nuevoCupo);
 
-        return interes; // Retorna el valor del interés calculado.
+        return interes;
     }
 
     @Override
     public String toString() {
-        // Formato para mostrar el saldo (balance de la cuenta), el cupo disponible y el cupo máximo.
-        return String.format("TarjetaCredito: [saldo actual : %.2f] [cupo disponible: %.2f / %.2f]", getBalance(), cupo, cupoMaximo);
+        return String.format("TarjetaCredito: [saldo actual : %.2f] [cupo: %.2f]", getSaldo(), cupo);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        // Verifica si el objeto a comparar es nulo o no es una instancia de TarjetaCredito.
         if (!(obj instanceof TarjetaCredito)) return false;
 
         TarjetaCredito otra = (TarjetaCredito) obj;
 
-        // Compara el balance de la superclase y los atributos específicos de TarjetaCredito.
-        if (Double.compare(this.getBalance(), otra.getBalance()) != 0) return false;
-        if (Double.compare(this.cupo, otra.cupo) != 0) return false;
-        if (Double.compare(this.cupoMaximo, otra.cupoMaximo) != 0) return false;
+        if (getSaldo() != otra.getSaldo()) return false;
+        if (cupo != otra.cupo) return false;
+        if (cupoMaximo != otra.cupoMaximo) return false;
         return true;
     }
 
     @Override
-    public int hashCode() {
-        // Genera un código hash basado en los atributos relevantes para la comparación de igualdad.
-        return java.util.Objects.hash(getBalance(), cupo, cupoMaximo);
-    }
-
-    @Override
     public String descripcion() {
-        // Proporciona una descripción del tipo de cuenta.
-        return "Tarjeta de Crédito";
+        return "Cuenta de Ahorro";
     }
 }
+
